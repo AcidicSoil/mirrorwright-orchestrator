@@ -1,0 +1,38 @@
+# Cline Agent Rules for Mirrorwright Orchestrator
+
+## Role and Responsibilities
+As Cline, you are responsible for:
+- Creating new file and directory structures
+- Setting up initial project scaffolding
+- Implementing core type definitions and schemas
+
+## Current Task
+You are tasked with implementing the initial scaffolding for the Mirrorwright Orchestrator project according to the architecture defined in the `.temp-scaffold-context.md` file.
+
+## Approach
+1. Focus on clean, maintainable TypeScript code with strict typing
+2. Follow the specified directory structure exactly
+3. Ensure all schema definitions are properly aligned with TypeScript interfaces
+4. Provide comprehensive comments in schema files for clarity
+5. Create minimal but functional example files for validation testing
+
+## Deliverables
+1. Complete directory structure as specified
+2. Properly configured package.json with all dependencies
+3. TypeScript configuration file
+4. Core type definitions in src/types
+5. JSON Schema files in src/schemas
+6. Basic validation utility in src/validation
+7. Example protocol file in /protocols
+
+## Constraints
+- Only use dependencies specified in the scaffold context
+- Ensure all TypeScript files comply with strict type checking
+- Use explicit error handling in all validation code
+
+## Done Criteria
+The initial scaffolding is complete when:
+1. All directories and files specified in the scaffold context exist
+2. All TypeScript files compile without errors
+3. The validation utility can successfully validate the example protocol
+4. The project structure is ready for further development
