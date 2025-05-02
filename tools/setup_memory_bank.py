@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""
+Memory Bank Setup Tool for Mirrorwright Orchestrator
+
+This tool helps set up and verify the memory bank system for the project.
+"""
+
+import os
+import sys
+import json
+import argparse
+import shutil
+from pathlib import Path
+
+# Configuration
+MEMORY_BANK_DIR = "cursor-memory-bank"
+MEMORY_INDEX_FILE = os.path.join(MEMORY_BANK_DIR, "memory_index.json")
+MEMORY_BANK_FILES_DIR = os.path.join(MEMORY_BANK_DIR, "memory-bank")
+
+def check_setup():
+    """Check if the memory bank system is properly set up."""
+    print("Checking Memory Bank setup...")
+    
+    # Check if memory bank directory exists
+    if not os.path.exists(MEMORY_BANK_DIR):
+        print(f"❌ Memory Bank directory '{MEMORY_BANK_DIR}' does not exist.")
+        return False
+    
+    # Check if memory index file exists
+    if not os.path.exists(MEMORY_INDEX_FILE):
+        print(f"❌ Memory index file '{MEMORY_INDEX_FILE}' does not exist.")
+        return False
+    
+    # Check if memory bank files directory exists
+    if not os.path.exists(MEMORY_BANK_FILES_DIR):
+        print(f"❌ Memory bank files directory '{MEMORY_BANK_FILES_DIR}' does not exist.")
+        return False
+    
+    # Check if memory.py script exists
+    if not os.path.exists("tools/memory.py"):
+        print("❌ Memory management script 'tools/memory.py' does not exist.")
+        return False
+    
+    # Check if custom modes directory exists
+    if not os.path.exists(os.path.join(MEMORY_BANK_DIR, "custom_modes")):
+        print(f"❌ Custom modes directory '{os.path.join(MEMORY_BANK_DIR, 'custom_modes')}' does not exist.")
+        return False
+    
+    print("✅ Memory Bank system is properly set up!")
+    return True
+
+def setup_memory_bank():
+    """Set up the memory bank system."""
+    print("Setting up Memory Bank system...")
+    
+    # Create memory bank directory if it doesn't exist
+    if not os.path.exists(MEMORY_BANK_DIR):
+        os.makedirs(MEMORY_BANK_DIR)
+        print(f"✅ Created Memory Bank directory '{MEMORY_BANK_DIR}'.")
+    
+    # Create memory index file if it doesn't exist
+    if not os.path.exists(MEMORY_INDEX_FILE):
+        with open(MEMORY_INDEX_FILE, 'w') as f:
+            json.dump({"memories": []}, f, indent=2)
+        print(f"✅ Created memory index file '{MEMORY_INDEX_FILE}'.")
+    
+    # Create memory bank files directory if it doesn't exist
+    if not os.path.exists(MEMORY_BANK_FILES_DIR):
+        os.makedirs(MEMORY_BANK_FILES_DIR)
+        print(f"✅ Created memory bank files directory '{MEMORY_BANK_FILES_DIR}'.")
+    
+    # Create basic memory bank files if they don't exist
+    for file_name in ["tasks.md", "activeContext.md", "progress.md"]:
+        file_path = os.path.join(MEMORY_BANK_FILES_DIR, file_name)
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as f:
+                f.write(f"# {file_name.split('.')[0].title()}\n\n")
+            print(f"✅ Created memory bank file '{file_path}'.")
+    
+    # Create custom modes directory if it doesn't exist
+    custom_modes_dir = os.path.join(MEMORY_BANK_DIR, "custom_modes")
+    if not os.path.exists(custom_modes_dir):
+        os.makedirs(custom_modes_dir)
+        print(f"✅ Created custom modes directory '{custom_modes_dir}'.")
+    
+    print("✅ Memory Bank system setup complete!")
+    return True
+
+def main():
+    parser = argparse.ArgumentParser(description="Memory Bank Setup Tool")
+    parser.add_argument("--check", action="store_true", help="Check if the memory bank system is properly set up")
+    parser.add_argument("--setup", action="store_true", help="Set up the memory bank system")
+    
+    args = parser.parse_args()
+    
+    if args.check:
+        check_setup()
+    elif args.setup:
+        setup_memory_bank()
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()
