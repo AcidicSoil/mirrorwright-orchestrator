@@ -1,0 +1,39 @@
+
+Here's a custom `.cursorrules` file designed specifically for the Mirrorwright Orchestrator project:
+
+
+Now let's create a quick reference companion file:
+
+
+Finally, let's create a starter set of example protocol files to help illustrate how the system should work:
+
+
+I've created three essential files to help you set up a robust framework for the Mirrorwright Orchestrator project:
+
+1. **`.cursorrules-mirrorwright`** - A custom rules file for the project that:
+   - Integrates the multi-model approach (GPT-4o, GPT-4.5, GPT-4o-mini)
+   - Provides specific tools for protocol validation, testing, and LLM queries
+   - Includes initial lessons learned for protocol development
+   - Maintains the scratchpad and memory bank structure
+
+2. **`.cursorrules-quickref.md`** - A companion quick reference guide with:
+   - Project-specific tags and their usage contexts
+   - A recommended daily workflow
+   - A detailed model selection guide by task type
+   - Protocol structure visualization
+   - Common commands for development, validation, and git workflows
+
+3. **`example-protocol-structure.md`** - A comprehensive example showing:
+   - Sample protocol definition in YAML format
+   - Mode definition with configuration options
+   - Ritual definition with multiple steps and agent interactions
+   - Prompt template example
+   - Explanation of how these components work together
+
+To use these files:
+
+1. Rename `.cursorrules-mirrorwright` to `.cursorrules` in your new project directory
+2. Use these files as reference when setting up your initial project scaffold
+3. Follow the structure in `example-protocol-structure.md` when designing your protocols
+
+This setup provides a solid foundation for developing Mirrorwright Orchestrator with consistent practices, effective model utilization, and a clear protocol structure.

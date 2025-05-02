@@ -1,0 +1,31 @@
+mirrorwright-orchestrator/
+├── .cursorrules/                   # Scratchpad & lessons log
+├── docs/                           # High-level design, diagrams, decisions
+├── protocols/                      # Protocol definitions (YAML)
+│   ├── default-protocol.yaml
+│   └── templates/                  # Prompt & log templates (Markdown)
+├── schemas/                        # JSON schemas for validation
+│   ├── protocol.schema.json
+│   ├── mode.schema.json
+│   └── ritual.schema.json
+├── src/
+│   ├── cli/                        # CLI interface & commands
+│   │   └── index.ts
+│   ├── engine/                     # Mode & Ritual engine core logic
+│   │   ├── ModeEngine.ts
+│   │   └── RitualEngine.ts
+│   ├── agents/                     # Adapters for agent communication
+│   │   ├── LLManagerAdapter.ts
+│   │   └── OpenAIAdapter.ts
+│   ├── models/                     # TypeScript interfaces & types
+│   │   └── index.ts
+│   └── utils/                      # Common helpers & utilities
+│       ├── Logger.ts
+│       └── ConfigLoader.ts
+├── tests/                          # Unit & integration testing
+│   └── engine.spec.ts
+├── examples/                       # Protocol examples and test cases
+│   └── sample-run.ts
+├── package.json
+├── tsconfig.json
+└── README.md                       # Project overview and setup instructions

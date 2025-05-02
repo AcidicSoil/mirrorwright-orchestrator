@@ -1,0 +1,58 @@
+🤖 Understood: Working alongside my multi-agent Cursor system (Cline, Augment) and `.cursorrules` framework.
+
+We are initiating a **major strategic pivot**. Please disregard previous discussions focused on enhancing the 'Bolt' features or integrating directly into `cursor-memory-bank`/`vibe-check-mcp-server` forks for that specific purpose.
+
+Our new direction is to build a **new project entirely from scratch**, provisionally named **"Mirrorwright Orchestrator"**. This system will be purpose-built to implement the **Mirrorwright Protocol** for multi-agent orchestration, drawing inspiration (but not code directly unless it's a utility) from projects like `cursor-memory-bank`, `open-codex`, etc.
+
+I have prepared a detailed **Kickoff Prompt** outlining the goals, philosophy, core components, and initial setup requests for this new project. Your primary role here is **strategic and architectural planning**.
+
+
+
+======================
+
+Kickoff prompt:
+
+=======================
+
+
+**Project Kickoff Prompt:**
+
+---
+
+**Subject: Initiate New Project - "Mirrorwright Orchestrator"**
+
+**Goal:**
+We are starting a **new project from scratch** to build an AI agent orchestration system centered around the **Mirrorwright Protocol**. The objective is to create a robust, flexible framework for managing multi-agent workflows (strategic planning, scaffolding, refinement) with a strong emphasis on structured communication, role clarity, and reflective loops.
+
+**Core Philosophy:**
+
+- **Build From Scratch:** We are *not* forking existing projects like `cursor-memory-bank` or `open-codex`. Instead, we will implement the necessary functionalities ourselves.
+- **Inspired By, Not Bound By:** We will study and selectively borrow *concepts, patterns, and utility code* from reference projects (`cursor-memory-bank` for mode/ritual structure, `open-codex` for execution/plugin ideas, `vibe-check-mcp-server` for potential metacognitive hooks, `llmanager`/`agent-inbox` for agent control principles) but implement them in a way that is purpose-built for the Mirrorwright Protocol.
+- **Mirrorwright First:** All architectural decisions should prioritize supporting the core Mirrorwright concepts (strategic alignment canvas, meta-thinking mode, prompt rituals, split-vision logging, etc.).
+
+**Core Components to Design & Implement:**
+
+1. **Protocol Storage:** A mechanism to define, store, and retrieve strategic protocols like Mirrorwright (including canvases, mode definitions, ritual definitions, prompt templates, log templates). (File-based storage like YAML/JSON/Markdown seems appropriate initially).
+2. **Mode & Ritual Engine:** Logic to load mode definitions, parse ritual steps, and manage the active state/context associated with a mode.
+3. **Execution Engine (Codex-Inspired):** A central engine responsible for:
+    - Running rituals.
+    - Orchestrating agent interactions (interfacing with agent control layers based on `llmanager`/`agent-inbox` concepts).
+    - Executing commands (CLI or programmatic).
+    - Managing context between steps.
+    - (Consider a simple plugin architecture for extensibility).
+4. **Agent Interface Layer:** Abstracted way to communicate with different agents (passing prompts, receiving responses, applying mode-based modifiers).
+5. **Interfaces:** Initial focus on a Command Line Interface (CLI) for interacting with the system (running rituals, managing protocols, triggering agent actions).
+6. **Logging/Feedback:** System for logging agent interactions, decisions, and external feedback (like the Split-Vision Logbook).
+
+**Initial Task Request:**
+
+1. **Propose a Project Directory Structure:** Create a logical root directory structure for this new "Mirrorwright Orchestrator" project. Include folders for protocols, modes, rituals, the core engine, CLI interface, utilities, potentially tests, etc.
+2. **Recommend a Technology Stack:** Suggest a suitable stack (e.g., Language: TypeScript/Node.js? Package Manager: pnpm/npm? Testing Framework?). Prioritize maintainability and ecosystem support.
+3. **Define Initial Data Models/Schemas:** Outline the basic structure (e.g., TypeScript types or JSON schemas) for how `Protocols`, `Modes`, and `Rituals` will be defined and stored in files.
+4. **Scaffold Basic Project Files:** Create the initial `package.json`, `tsconfig.json` (if TypeScript), basic directory structure, and placeholder files for the core engine and CLI entry point based on your recommendations.
+
+Let's build a clean, focused foundation tailored specifically for the Mirrorwright Protocol.
+
+---
+
+This prompt sets a clear direction, defines the scope, establishes the build philosophy, lists the required components, and requests the essential first steps: structure, stack, schemas, and basic file setup.

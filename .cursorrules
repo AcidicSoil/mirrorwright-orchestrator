@@ -1,0 +1,169 @@
+# .cursorrules for Mirrorwright Orchestrator
+
+# Reference
+
+For fast workflow and tagging: see `.cursorrules-quickref.md`
+
+# Instructions
+
+During your interaction with the user, if you find anything reusable in this project (e.g., version of a library, model name, prompt structure, protocol definition), you must document it in the **Lessons** section below. This helps to prevent repeating errors and speeds up future tasks.
+
+**Branching Rule for New Features**
+
+Whenever you are tasked with adding a new feature or significant improvement, **always start by creating a dedicated feature branch from the latest main branch**.
+This protects the integrity of the main codebase and keeps your work isolated until it's ready to merge.
+
+**Standard steps:**
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/[feature-name]
+```
+
+- Replace `[feature-name]` with a short, descriptive name for the new feature.
+- Only merge back into `main` when the feature is tested and complete.
+
+You must always follow this practice for any new features, protocol extensions, or refactors.
+
+**Multi-Model Strategy**
+
+When working on Mirrorwright Orchestrator tasks, select the appropriate model based on the task:
+
+- **GPT-4o**: Use for architecture planning, complex system design, and visual reasoning
+- **GPT-4.5**: Use for protocol specifications, documentation, and creative exploration
+- **GPT-4o-mini**: Use for rapid implementation, iterative refinement, and routine coding tasks
+
+For critical components, employ "Model Ensemble Validation" by cross-checking solutions with multiple models.
+
+You must also actively use the **Scratchpad** and **Memory Bank** systems as follows:
+
+## Scratchpad Usage
+
+- Use the Scratchpad as your active "thinking space."
+- Upon receiving a new task:
+  - Review the current Scratchpad content.
+  - Clear any unrelated or completed tasks.
+  - Summarize the task clearly.
+  - Plan your steps and record them using todo markers:
+    ```
+    [X] Step 1 completed
+    [ ] Step 2 pending
+    ```
+- As you progress:
+  - Update the Scratchpad with reflections, partial solutions, insights, and completed steps.
+  - Especially after reaching a milestone, reflect on what worked and what could be improved.
+
+## Memory Bank Usage
+
+- After completing any meaningful task (fix, process, discovery, workflow improvement):
+  - Summarize **task metadata**:
+    _What was solved? What decisions were made? What mistakes were corrected? What new knowledge was gained?_
+  - Save a structured memory entry using:
+    ```bash
+    python tools/memory.py save --title "Task Title" --tags tag1,tag2 --notes "Key metadata and takeaways"
+    ```
+- Before starting a new task:
+  - Search previous memory entries to check if relevant examples, lessons, or templates exist:
+    ```bash
+    python tools/memory.py search --query "keywords"
+    ```
+- Regularly update or archive old memories if newer, better methods are discovered.
+
+> Always refer to both the Scratchpad **and** the Memory Bank when planning next steps.
+
+# Tools
+
+All tools are Python 3-based. Make sure the virtual environment is activated before use.
+
+## Protocol Validation Tools
+
+- Validate a protocol file:
+
+  ```bash
+  python tools/validate_protocol.py --file protocols/my-protocol.yaml
+  ```
+
+- Generate TypeScript types from a protocol schema:
+
+  ```bash
+  python tools/generate_types.py --schema schemas/protocol.json --output src/types/generated.ts
+  ```
+
+## Testing & Debugging Tools
+
+- Run the test suite:
+
+  ```bash
+  npm test
+  ```
+
+- Debug a ritual execution:
+
+  ```bash
+  python tools/debug_ritual.py --protocol protocols/my-protocol.yaml --ritual ritual-name
+  ```
+
+## LLM Query Tools
+
+- Query an LLM with protocol context:
+
+  ```bash
+  python tools/llm_query.py --prompt "Your prompt" --protocol protocols/my-protocol.yaml --model gpt-4o
+  ```
+
+- Run a mode simulation:
+
+  ```bash
+  python tools/simulate_mode.py --mode "meta-thinking" --input "test-input.txt"
+  ```
+
+# Lessons
+
+## User Specified Lessons
+
+- Use TypeScript for all core engine code with strict type checking enabled.
+
+- Store protocols as YAML files for readability but process them as JSON internally.
+
+- Ensure clear separation between protocol definitions and the execution engine.
+
+- For CI workflows, configure caching to speed up TypeScript validation and testing.
+
+## Cursor Learned
+
+- When defining protocol schemas, include example files that demonstrate all features of the schema.
+
+- AJV (Another JSON Validator) works well for runtime validation, but requires explicit error handling.
+
+- For ritual steps with conditional logic, use a clear `condition` property rather than embedding logic in the step content.
+
+- Prefer explicit agent boundaries in protocol definitions. Each agent should have a well-defined role and responsibilities.
+
+- Always test protocol loading with invalid protocol files to ensure robust error handling.
+
+# Scratchpad
+
+## Current Task
+
+(Use this section to explain the task, list todo steps, and track progress.)
+
+## Reflection
+
+(After milestones or task completion, write brief notes about what worked, what didn't, and what could improve.)
+
+# Memory Bank Quickstart Commands
+
+- Save a new memory:
+
+  ```bash
+  python tools/memory.py save --title "Task Title" --tags tag1,tag2 --notes "important metadata, fixes, templates"
+  ```
+
+- Search existing memories:
+
+  ```bash
+  python tools/memory.py search --query "keywords"
+  ```
+
+> Maintain a clean, organized, and actionable Memory Bank at all times to compound your efficiency over time.
