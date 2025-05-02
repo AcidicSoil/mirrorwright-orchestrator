@@ -1,6 +1,6 @@
 **Created:** 4/30/2025 17:36  
-**Updated:** 5/1/2025 17:38  
-**Exported:** 5/1/2025 17:41  
+**Updated:** 5/1/2025 17:44  
+**Exported:** 5/2/2025 9:05  
 
 ## Prompt:
 Okay, here is a comprehensive starting prompt designed to kick off your new project. This prompt is intended for an AI assistant capable of architectural planning and potentially scaffolding (like Cursor's Cline, or a similar tool if you're using a different environment). It clearly states the goal, the "build from scratch" approach, incorporates the key concepts, and asks for the initial structural setup.

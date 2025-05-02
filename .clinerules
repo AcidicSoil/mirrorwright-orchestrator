@@ -1,0 +1,65 @@
+### .clinerules — Mirrorwright-Style CLI Behavior Rules (with Idempotency)
+
+# Core Principle
+All CLI tools within Mirrorwright Orchestrator must adhere to strict **idempotency**, **predictability**, and **verifiability**. This ensures consistent behavior across re-runs and safer automation across agents.
+
+---
+
+## 🧱 Command Structure
+- All commands must support:
+  - `--dry-run` for preview without state change
+  - `--validate` or equivalent safety flag
+  - `--force` or `--overwrite` with explicit toggle logic
+
+---
+
+## 🔁 Idempotency Rules
+- Commands must return identical outputs on re-run when no external state has changed.
+- Mutation logic must:
+  - Detect if the desired state is already true
+  - Exit cleanly if no change is needed
+- File writes must:
+  - Use temp-and-rename patterns
+  - Avoid direct overwrites unless explicitly forced
+
+---
+
+## ✅ Examples (Good)
+
+```bash
+cli setup --env prod --dry-run  # Preview setup
+cli setup --env prod            # Idempotent apply
+cli scaffold agent --name thinker --overwrite safe
+cli upgrade protocol --to v1.4 --validate-before
+```
+
+---
+
+## ❌ Anti-Patterns (Bad)
+- No state check before overwrite
+- Destructive defaults (e.g., writing without `--force`)
+- Ambiguous failure modes (missing structured errors)
+
+---
+
+## 🧪 Output Rules
+- Always emit structured logs or error blocks
+  - Prefer `json` or `yaml`
+  - Include:
+    - `status: success|error`
+    - `error:` block with `code`, `message`
+
+---
+
+## 🔒 Safety Layer Expectations
+- Validate before mutation
+- Emit warning on first-time destructive operations
+- Explicitly block ambiguous input/output paths
+
+---
+
+## 🧠 Integration with `.cursorrules`
+- Mirrorwright CLI must:
+  - Write all results to Scratchpad-compatible format
+  - Enable post-command memory saving with metadata flags
+  - Support `workflow-[tag]` or `task-[tag]` flags for Memory Bank
