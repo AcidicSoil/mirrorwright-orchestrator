@@ -6,6 +6,19 @@ This directory contains prompt templates and configuration files for the Mirrorw
 
 Prompt templates are used to standardize interactions with different AI assistants and ensure consistent, high-quality outputs. These templates are designed to work with the Mirrorwright Protocol and can be used with various AI models.
 
+## Agent Roles
+
+- **Cursor Cline**: Strategic planning and requirements clarification
+- **Cursor Augment**: Scaffolding, architecture setup, optimization, and refactoring
+- **ChatGPT**: Strategy and meta-thinking
+
+## When to Use Each Agent
+
+- **For strategic planning or requirements clarification:** call Cline
+- **For scaffolding or initial project setup:** call Augment
+- **For optimization and refactoring:** call Augment
+- **For high-level strategy and meta-thinking:** call ChatGPT
+
 ## Directory Contents
 
 - **chatGPT-strategicAI-prompt_template.md**: Template for Strategic AI interactions
@@ -30,7 +43,7 @@ The Strategic AI prompt template (`chatGPT-strategicAI-prompt_template.md`) is u
 
 ### Memory Bank Integration
 
-The memory bank configuration (`memory-bank-config.md`) outlines how to integrate with the Cline memory bank system. This integration enables:
+The memory bank configuration (`memory-bank-config.md`) outlines how to integrate with the memory bank system. This integration enables:
 
 1. Storing and retrieving project memories
 2. Tracking development progress

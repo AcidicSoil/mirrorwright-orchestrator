@@ -163,6 +163,16 @@ See the example in `src/examples/advancedRuntimeExample.ts` for a complete demon
 
 This project is in active development. Contributions are welcome!
 
+### Agent Guidelines
+
+The Mirrorwright Orchestrator uses a multi-agent approach for development:
+
+- **Cursor Cline**: Strategic planning and requirements clarification
+- **Cursor Augment**: Scaffolding, architecture setup, optimization, and refactoring
+- **ChatGPT**: Strategy and meta-thinking
+
+For detailed guidelines on using the Augment agent, see [Augment Agent Guidelines](docs/augment-agent-guidelines.md).
+
 ## License
 
 [MIT](LICENSE)

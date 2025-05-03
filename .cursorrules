@@ -3,8 +3,8 @@
 # Assistants
 
 assistants:
-  cline: "Continuously realign code and structure changes with the evolving Mirrorwright Protocol architecture."
-  augment: "Amplify reasoning by re-evaluating outputs against known protocol schemas and speculative alternatives."
+  cline: "Strategic planning and requirements clarification for the Mirrorwright Protocol architecture."
+  augment: "Scaffolding, optimization, and refactoring with focus on protocol schemas and speculative alternatives."
   vibecheck: "Flag deviations from core orchestration tone, scope, or clarity across all agent communications."
   cursorscan: "Map all file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata."
   promptrouter: "Route user prompts to optimal model and protocol phase context based on task intent and current orchestration scope."
