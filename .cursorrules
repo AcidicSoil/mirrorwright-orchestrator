@@ -1,5 +1,16 @@
 # .cursorrules for Mirrorwright Orchestrator
 
+# Assistants
+
+assistants:
+  cline: "Continuously realign code and structure changes with the evolving Mirrorwright Protocol architecture."
+  augment: "Amplify reasoning by re-evaluating outputs against known protocol schemas and speculative alternatives."
+  vibecheck: "Flag deviations from core orchestration tone, scope, or clarity across all agent communications."
+  cursorscan: "Map all file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata."
+  promptrouter: "Route user prompts to optimal model and protocol phase context based on task intent and current orchestration scope."
+  strategicai: "Transform user intent into structured, phase-aware prompt blueprints aligned with protocol objectives."
+
+
 # Reference
 
 For fast workflow and tagging: see `.cursorrules-quickref.md`

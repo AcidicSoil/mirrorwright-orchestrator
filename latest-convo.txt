@@ -1,0 +1,113 @@
+✅ **Protocol schema validation module created** at `src/utils/validateSchemas.ts`.
+
+Next, here are the YAML examples and matching schemas:
+
+---
+
+### 📁 `protocols/default-protocol.yaml`
+
+```yaml
+name: "default-protocol"
+description: "Base example protocol"
+modes:
+  - id: "meta-thinking"
+    title: "Meta Thinking Mode"
+    description: "Switches agent into strategic reflection."
+    activeRituals: ["demo-ritual"]
+rituals:
+  - id: "demo-ritual"
+    title: "Demo Ritual"
+    description: "Basic example flow"
+    steps:
+      - promptTemplate: "demo-template.md"
+        expectedOutputFormat: "text/markdown"
+        metaCognitiveHooks: ["reflect:goals", "check:context"]
+```
+
+---
+
+### 📁 `schemas/protocol.schema.json`
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Protocol",
+  "type": "object",
+  "required": ["name", "modes", "rituals"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "modes": {
+      "type": "array",
+      "items": { "$ref": "mode.schema.json" }
+    },
+    "rituals": {
+      "type": "array",
+      "items": { "$ref": "ritual.schema.json" }
+    }
+  }
+}
+```
+
+---
+
+### 📁 `schemas/mode.schema.json`
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mode",
+  "type": "object",
+  "required": ["id", "title", "activeRituals"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "contextModifiers": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "activeRituals": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
+```
+
+---
+
+### 📁 `schemas/ritual.schema.json`
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ritual",
+  "type": "object",
+  "required": ["id", "title", "steps"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["promptTemplate"],
+        "properties": {
+          "promptTemplate": { "type": "string" },
+          "expectedOutputFormat": { "type": "string" },
+          "metaCognitiveHooks": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+---
+
+Would you like me to add these YAML and schema files into your local workspace now, or generate another follow-up stub (e.g., CLI `run demo-ritual` handler)?

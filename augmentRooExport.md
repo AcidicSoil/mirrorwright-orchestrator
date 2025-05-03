@@ -1,8 +1,7 @@
-Augment Logo
-claytonbivens1@gmail.com
+
 Mirrorwright Model Selection Strategy
 May 2, 2025
-claytonbivens1
+
 explain why GPT 4.5 is used vs o4-mini-high/GPT-4o vs etc...
 
 Augment
@@ -35,7 +34,7 @@ Rapid prototyping and iterative development
 Routine code assistance for lower-risk work
 This strategic approach optimizes for both quality and efficiency by reserving high-capacity models for tasks where their extra reasoning capacity provides clear value, while using lighter models for routine work to improve throughput.
 
-claytonbivens1
+
 give me an example workflow that shows this in a practical scenerio using our codebase
 
 Augment
