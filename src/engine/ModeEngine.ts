@@ -1,75 +1,148 @@
 import { Logger } from '../utils/Logger';
-import Ajv from 'ajv';
-import modeSchema from '../schemas/mode.schema.json';
+import { ModeDefinition } from '../types/protocol';
+import { EngineError, EngineErrorType, IModeEngine } from '../types/engine';
+import { schemaValidator } from '../utils/validateSchema';
 
-export class ModeEngine {
+/**
+ * Engine responsible for managing modes and their lifecycle
+ */
+export class ModeEngine implements IModeEngine {
   private logger: Logger;
-  private ajv: Ajv;
-  private activeModes: Record<string, any> = {};
+  private activeModes: Record<string, ModeDefinition> = {};
 
+  /**
+   * Create a new ModeEngine instance
+   */
   constructor() {
     this.logger = new Logger();
-    this.ajv = new Ajv();
-    if (!this.ajv.addSchema(modeSchema)) {
-      throw new Error('Failed to add mode schema');
-    }
   }
 
-  public async initializeModes(modes: any[]) {
+  /**
+   * Initialize modes from definitions
+   * @param modes Array of mode definitions
+   * @throws EngineError if validation fails or initialization fails
+   */
+  public async initializeModes(modes: ModeDefinition[]): Promise<void> {
     this.logger.info('Initializing modes...');
 
-    // Validate modes against schema
-    const validateMode = this.ajv.getSchema('mode');
-    if (!validateMode) {
-      throw new Error('Mode schema not found');
-    }
-
-    modes.forEach(mode => {
-      if (!validateMode(mode)) {
-        throw new Error(`Invalid mode detected: ${JSON.stringify(mode, null, 2)}`);
+    try {
+      // Validate each mode against schema
+      for (const mode of modes) {
+        try {
+          schemaValidator.validate(mode, 'mode');
+        } catch (error) {
+          throw new EngineError(
+            `Invalid mode detected (${mode.id}): ${error instanceof Error ? error.message : String(error)}`,
+            EngineErrorType.VALIDATION_ERROR
+          );
+        }
       }
-    });
 
-    // Store modes
-    this.activeModes = modes.reduce((acc: Record<string, any>, mode: any) => {
-      acc[mode.id] = mode;
-      return acc;
-    }, {});
+      // Store modes
+      this.activeModes = modes.reduce((acc: Record<string, ModeDefinition>, mode: ModeDefinition) => {
+        acc[mode.id] = mode;
+        return acc;
+      }, {});
 
-    this.logger.info(`Initialized ${modes.length} modes successfully.`);
+      this.logger.info(`Initialized ${modes.length} modes successfully.`);
+    } catch (error) {
+      // Re-throw EngineErrors, wrap others
+      if (error instanceof EngineError) {
+        throw error;
+      }
+
+      throw new EngineError(
+        `Failed to initialize modes: ${error instanceof Error ? error.message : String(error)}`,
+        EngineErrorType.INITIALIZATION_ERROR
+      );
+    }
   }
 
-  public getActiveModes(): Record<string, any> {
+  /**
+   * Get all active modes
+   * @returns Record of active modes by ID
+   */
+  public getActiveModes(): Record<string, ModeDefinition> {
     return { ...this.activeModes };
   }
 
-  public async activateMode(modeId: string, context: Record<string, any>): Promise<void> {
-    const mode = this.activeModes[modeId];
-    if (!mode) {
-      throw new Error(`Mode '${modeId}' not found.`);
-    }
-
-    // Apply context modifiers
-    const modifiedContext = {
-      ...context,
-      ...mode.contextModifiers
-    };
-
-    this.logger.info(`Activating mode '${modeId}' with context: ${JSON.stringify(modifiedContext, null, 2)}`);
-
-    // TODO: Integrate with mode-specific activation logic
+  /**
+   * Check if a mode is active
+   * @param modeId ID of the mode to check
+   * @returns True if the mode is active, false otherwise
+   */
+  public isModeActive(modeId: string): boolean {
+    return !!this.activeModes[modeId];
   }
 
-  public async deactivateMode(modeId: string): Promise<void> {
-    const mode = this.activeModes[modeId];
-    if (!mode) {
-      throw new Error(`Mode '${modeId}' not found.`);
+  /**
+   * Activate a specific mode with context
+   * @param modeId ID of the mode to activate
+   * @param context Context data for the mode
+   * @throws EngineError if mode not found or activation fails
+   */
+  public async activateMode(modeId: string, context: Record<string, any>): Promise<void> {
+    try {
+      const mode = this.activeModes[modeId];
+      if (!mode) {
+        throw new EngineError(
+          `Mode '${modeId}' not found.`,
+          EngineErrorType.NOT_FOUND_ERROR
+        );
+      }
+
+      // Apply context modifiers if they exist
+      const modifiedContext = {
+        ...context,
+        ...(mode.config || {})
+      };
+
+      this.logger.info(`Activating mode '${modeId}' with context: ${JSON.stringify(modifiedContext, null, 2)}`);
+
+      // TODO: Integrate with mode-specific activation logic
+    } catch (error) {
+      // Re-throw EngineErrors, wrap others
+      if (error instanceof EngineError) {
+        throw error;
+      }
+
+      throw new EngineError(
+        `Failed to activate mode '${modeId}': ${error instanceof Error ? error.message : String(error)}`,
+        EngineErrorType.EXECUTION_ERROR
+      );
     }
+  }
 
-    this.logger.info(`Deactivating mode '${modeId}'`);
+  /**
+   * Deactivate a specific mode
+   * @param modeId ID of the mode to deactivate
+   * @throws EngineError if mode not found or deactivation fails
+   */
+  public async deactivateMode(modeId: string): Promise<void> {
+    try {
+      const mode = this.activeModes[modeId];
+      if (!mode) {
+        throw new EngineError(
+          `Mode '${modeId}' not found.`,
+          EngineErrorType.NOT_FOUND_ERROR
+        );
+      }
 
-    // TODO: Integrate with mode-specific deactivation logic
+      this.logger.info(`Deactivating mode '${modeId}'`);
 
-    delete this.activeModes[modeId];
+      // TODO: Integrate with mode-specific deactivation logic
+
+      delete this.activeModes[modeId];
+    } catch (error) {
+      // Re-throw EngineErrors, wrap others
+      if (error instanceof EngineError) {
+        throw error;
+      }
+
+      throw new EngineError(
+        `Failed to deactivate mode '${modeId}': ${error instanceof Error ? error.message : String(error)}`,
+        EngineErrorType.EXECUTION_ERROR
+      );
+    }
   }
 }

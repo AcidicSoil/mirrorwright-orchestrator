@@ -1,0 +1,34 @@
+name: Update Assistant Prompts
+
+on:
+  push:
+    paths:
+      - 'strategy/**.md'
+      - '.cursorrules'
+      - 'src/tools/extractAssistantPrompts.*'
+
+jobs:
+  generate-prompts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Assistant Prompts
+        run: node src/tools/extractAssistantPrompts.js extractAssistantPrompts.md assistant-prompts
+
+      - name: Commit and push prompt updates
+        run: |
+          git config user.name "mirrorwright-bot"
+          git config user.email "bot@mirrorwright.ai"
+          git add assistant-prompts/*
+          git commit -m "[#docs] Auto-update assistant prompts"
+          git push

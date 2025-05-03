@@ -1,64 +1,39 @@
-# Strategic AI Prompt Template for GPT-4.5
+# Strategic AI Prompt Template
 
 ## Context
-The Mirrorwright Orchestrator project has made significant progress with the implementation of the runtime container module, including the Agent Registry, Message Bus (both Simple and Advanced implementations), and basic message validation. We've established the core interfaces and implemented the foundational components for agent lifecycle management and message routing. Recently, we've added assistant prompts for protocol optimization and validation specialists.
+[Provide brief context about the current state of the Mirrorwright Orchestrator project, including any recent developments or challenges]
 
 ## Question/Task
-How can we enhance the MessageValidator to implement a more sophisticated caching mechanism that optimizes validation performance for high-throughput scenarios while maintaining type safety? Specifically, we need a design for a caching layer that can efficiently handle repeated validation of similar message structures without compromising validation accuracy.
+[Clearly state what you need guidance on, being as specific as possible]
 
 ## Current Approach
-Currently, our MessageValidator uses AJV to validate messages against a JSON schema, but it creates a new validator instance for each validation and doesn't implement any caching. This approach works for basic scenarios but may become a performance bottleneck in high-throughput environments where similar messages are frequently validated.
-
-```typescript
-export class MessageValidator {
-  private validator: ValidateFunction;
-  private logger: Logger;
-
-  constructor() {
-    const ajv = new Ajv({ allErrors: true });
-    this.validator = ajv.compile(messageSchema);
-    this.logger = new Logger();
-  }
-
-  public validate(message: unknown): message is Message {
-    const valid = this.validator(message);
-
-    if (!valid && this.validator.errors) {
-      this.logger.error(`Message validation failed: ${JSON.stringify(this.validator.errors)}`);
-    }
-
-    return !!valid;
-  }
-
-  public validateWithThrow(message: unknown): asserts message is Message {
-    const valid = this.validator(message);
-
-    if (!valid && this.validator.errors) {
-      const errorMessage = `Message validation failed: ${JSON.stringify(this.validator.errors)}`;
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }
-}
-```
+[Describe your current thinking or approach to the problem, if applicable]
 
 ## Constraints
-
-- Must maintain compatibility with the existing MessageValidator interface
-- Must work with AJV validation library
-- Must provide detailed error messages for validation failures
-- Must be thread-safe and handle concurrent validation requests
-- Must be configurable (cache size, expiration policy)
-- Must support TypeScript strict mode and maintain type safety
-- Should minimize memory usage while maximizing performance
+[List any technical, architectural, or process constraints that must be respected]
 
 ## Expected Output
+[Specify what kind of output you're looking for: architecture proposal, evaluation of options, workflow recommendation, etc.]
 
-A detailed design for an enhanced MessageValidator with caching capabilities, including:
+---
 
-1. Architecture diagram or description of the caching mechanism
-2. TypeScript interface and implementation code for the enhanced validator
-3. Strategy for cache key generation and invalidation
-4. Performance considerations and tradeoffs
-5. Recommendations for configuration options (cache size, TTL, etc.)
-6. Example usage in the context of the RuntimeContainer
+Example:
+
+## Context
+We're implementing the protocol validation engine for Mirrorwright Orchestrator. We have defined the TypeScript interfaces and basic JSON Schema structure, but we're unsure about the most efficient way to handle conditional validation based on protocol modes.
+
+## Question/Task
+What's the most efficient architecture for implementing conditional validation rules that can vary based on the active mode in a protocol?
+
+## Current Approach
+We're considering two options:
+1. A single validator with conditional logic
+2. Multiple specialized validators that get selected based on mode
+
+## Constraints
+- Must work with Ajv validation library
+- Must provide clear, specific error messages
+- Must be extensible for future mode types
+
+## Expected Output
+A recommendation on which approach to take, with justification and a high-level design for the validation architecture.
