@@ -1,0 +1,7 @@
+id: "invalid-ritual"
+description: "Ritual with invalid step type"
+steps:
+  - type: "invalid-type" # Should be one of: prompt, action, pause
+    content: "This step has an invalid type"
+  - type: "prompt"
+    content: "This step is valid"

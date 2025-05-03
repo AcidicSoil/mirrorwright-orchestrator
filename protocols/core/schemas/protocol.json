@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Protocol",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "name": {"type": "string"},
+    "description": {"type": ["string", "null"]},
+    "version": {"type": "string"},
+    "modes": {
+      "type": "array",
+      "items": {"$ref": "#/schemas/modes/Mode.json"}
+    },
+    "rituals": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/schemas/rituals/Ritual.json"}
+    },
+    "metadata": {"type": ["object", "null"]}
+  },
+  "required": ["id", "name", "version", "modes", "rituals"],
+  "additionalProperties": false
+}

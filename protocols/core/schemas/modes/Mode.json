@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Mode",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "title": {"type": "string"},
+    "description": {"type": ["string", "null"]},
+    "contextModifiers": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": false
+    },
+    "activeRituals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "required": true
+    }
+  },
+  "required": ["id", "title", "activeRituals"],
+  "additionalProperties": false
+}

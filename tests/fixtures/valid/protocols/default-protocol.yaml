@@ -1,0 +1,57 @@
+id: "default-protocol"
+name: "Default Protocol"
+description: "Base example protocol for testing"
+version: "1.0.0"
+modes:
+  - id: "meta-thinking"
+    name: "Meta Thinking Mode"
+    entryRitual: "init-reflection"
+    exitRitual: "summarize-insights"
+    allowedTransitions:
+      - "creative-exploration"
+      - "implementation"
+  - id: "creative-exploration"
+    name: "Creative Exploration Mode"
+    entryRitual: "divergent-thinking"
+    exitRitual: "convergent-selection"
+    allowedTransitions:
+      - "meta-thinking"
+      - "implementation"
+rituals:
+  "init-reflection":
+    id: "init-reflection"
+    description: "Initial reflection ritual to establish context and goals"
+    steps:
+      - type: "prompt"
+        content: "What are the primary goals for this session?"
+      - type: "prompt"
+        content: "What constraints or requirements should be considered?"
+      - type: "action"
+        content: "Summarize goals and constraints"
+  "summarize-insights":
+    id: "summarize-insights"
+    description: "Summarize key insights from meta-thinking"
+    steps:
+      - type: "prompt"
+        content: "What are the key insights from this reflection?"
+      - type: "action"
+        content: "Compile insights into a structured format"
+  "divergent-thinking":
+    id: "divergent-thinking"
+    description: "Generate diverse ideas and possibilities"
+    steps:
+      - type: "prompt"
+        content: "Generate at least 5 different approaches to the problem"
+      - type: "action"
+        content: "Organize ideas into categories"
+  "convergent-selection":
+    id: "convergent-selection"
+    description: "Select and refine the most promising ideas"
+    steps:
+      - type: "prompt"
+        content: "Evaluate each idea against the established criteria"
+      - type: "action"
+        content: "Select top ideas and prepare for implementation"
+metadata:
+  author: "Test User"
+  createdAt: "2023-05-15"

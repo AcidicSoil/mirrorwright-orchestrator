@@ -1,0 +1,13 @@
+id: "meta-thinking"
+name: "Meta Thinking Mode"
+entryRitual: "init-reflection"
+exitRitual: "summarize-insights"
+allowedTransitions:
+  - "creative-exploration"
+  - "implementation"
+config:
+  depth: "deep"
+  focusAreas:
+    - "goals"
+    - "constraints"
+    - "assumptions"

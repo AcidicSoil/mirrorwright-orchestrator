@@ -1,0 +1,5 @@
+id: "invalid-mode"
+name: "Invalid Mode"
+# entryRitual is required but missing
+exitRitual: "summarize"
+allowedTransitions: "not-an-array" # Should be an array, not a string

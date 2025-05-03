@@ -1,0 +1,13 @@
+# Missing required fields: id, version
+name: "Invalid Protocol"
+description: "Protocol missing required fields"
+modes:
+  - id: "meta-thinking"
+    name: "Meta Thinking Mode"
+    entryRitual: "init-reflection"
+rituals:
+  "init-reflection":
+    id: "init-reflection"
+    steps:
+      - type: "prompt"
+        content: "What are the primary goals?"

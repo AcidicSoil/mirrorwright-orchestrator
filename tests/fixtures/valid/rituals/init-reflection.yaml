@@ -1,0 +1,14 @@
+id: "init-reflection"
+description: "Initial reflection ritual to establish context and goals"
+steps:
+  - type: "prompt"
+    content: "What are the primary goals for this session?"
+  - type: "prompt"
+    content: "What constraints or requirements should be considered?"
+  - type: "action"
+    content: "Summarize goals and constraints"
+metadata:
+  estimatedDuration: "5 minutes"
+  requiredContext:
+    - "project goals"
+    - "user preferences"
