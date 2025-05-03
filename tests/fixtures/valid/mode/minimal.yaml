@@ -1,0 +1,5 @@
+name: minimal-mode
+description: A basic mode configuration
+settings:
+  enabled: true
+  priority: 1

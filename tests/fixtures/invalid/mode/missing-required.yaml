@@ -1,0 +1,4 @@
+name: invalid-mode
+description: A mode configuration missing required fields
+settings:
+  priority: 2

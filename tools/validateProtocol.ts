@@ -1,244 +1,265 @@
-#!/usr/bin/env node
+import { readFileSync } from 'fs';
+import { basename, join } from 'path';
+import yaml from 'yaml';
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
 
-import { SchemaValidator, SchemaType, schemaValidator } from '../src/utils/validateSchema';
-import { resolve, join, extname } from 'path';
-import { existsSync, readdirSync, statSync, readFileSync } from 'fs';
-import * as yaml from 'js-yaml';
-import chalk from 'chalk';
+// Load schemas directly from files
+const protocolSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/protocol.json'), 'utf-8'));
+const modeSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/mode.schema.json'), 'utf-8'));
+const ritualSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/ritual.schema.json'), 'utf-8'));
 
-// Define command line options
-interface CommandLineOptions {
-  schemaType: SchemaType;
-  filePath: string | null;
-  recursive: boolean;
-  verbose: boolean;
-  help: boolean;
+export type SchemaType = 'protocol' | 'mode' | 'ritual' | 'all';
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
 }
 
-// Parse command line arguments
-function parseArgs(): CommandLineOptions {
-  const args = process.argv.slice(2);
-  const options: CommandLineOptions = {
-    schemaType: 'all',
-    filePath: null,
-    recursive: false,
-    verbose: false,
-    help: false
-  };
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    
-    if (arg === '--type' || arg === '-t') {
-      const value = args[++i];
-      if (value && ['mode', 'ritual', 'protocol', 'all'].includes(value)) {
-        options.schemaType = value as SchemaType;
-      } else {
-        console.error(chalk.red(`Invalid schema type: ${value}`));
-        options.help = true;
-      }
-    } else if (arg === '--recursive' || arg === '-r') {
-      options.recursive = true;
-    } else if (arg === '--verbose' || arg === '-v') {
-      options.verbose = true;
-    } else if (arg === '--help' || arg === '-h') {
-      options.help = true;
-    } else if (!arg.startsWith('-')) {
-      options.filePath = arg;
+// Create and configure Ajv instance
+const ajv = new Ajv({
+  allErrors: true,
+  verbose: true,
+  strictSchema: false,
+  strictTypes: false,
+  schemas: [
+    {
+      $id: "https://json-schema.org/draft-07/schema#",
+      $schema: "https://json-schema.org/draft-07/schema#",
+      title: "Core schema meta-schema",
+      type: ["object", "boolean"]
     }
-  }
-
-  return options;
-}
-
-// Show help message
-function showHelp(): void {
-  console.log(`
-${chalk.bold('Protocol Validator')}
-
-Validates protocol, mode, and ritual files against their respective schemas.
-
-${chalk.bold('Usage:')}
-  npx ts-node tools/validateProtocol.ts [options] [file|directory]
-
-${chalk.bold('Options:')}
-  --type, -t <type>     Schema type to validate against (mode, ritual, protocol, all)
-  --recursive, -r       Recursively validate files in directories
-  --verbose, -v         Show detailed validation information
-  --help, -h            Show this help message
-
-${chalk.bold('Examples:')}
-  npx ts-node tools/validateProtocol.ts --type ritual protocols/default/rituals/init.yaml
-  npx ts-node tools/validateProtocol.ts --type all --recursive protocols/
-  `);
-}
-
-// Validate a single file
-async function validateFile(filePath: string, schemaType: SchemaType, verbose: boolean): Promise<boolean> {
-  try {
-    console.log(chalk.blue(`Validating ${filePath} against ${schemaType} schema...`));
-    
-    // Determine file type and load content
-    const ext = extname(filePath).toLowerCase();
-    let data;
-    
-    if (ext === '.yaml' || ext === '.yml') {
-      // Parse YAML file
-      const fileContent = readFileSync(filePath, 'utf-8');
-      data = yaml.load(fileContent);
-    } else if (ext === '.json') {
-      // Parse JSON file
-      data = JSON.parse(readFileSync(filePath, 'utf-8'));
-    } else {
-      console.warn(chalk.yellow(`Skipping unsupported file type: ${filePath}`));
-      return false;
-    }
-    
-    if (schemaType === 'all') {
-      // Try all schema types
-      let validated = false;
-      
-      for (const type of ['mode', 'ritual', 'protocol'] as const) {
-        try {
-          schemaValidator.validate(data, type);
-          console.log(chalk.green(`✅ ${filePath} is valid against ${type} schema`));
-          validated = true;
-          break;
-        } catch (error) {
-          if (verbose) {
-            console.log(chalk.yellow(`Not valid as ${type}: ${error.message}`));
-          }
-        }
-      }
-      
-      if (!validated) {
-        console.error(chalk.red(`❌ ${filePath} is not valid against any schema`));
-        return false;
-      }
-    } else {
-      // Validate against specific schema type
-      try {
-        schemaValidator.validate(data, schemaType);
-        console.log(chalk.green(`✅ ${filePath} is valid against ${schemaType} schema`));
-      } catch (error) {
-        console.error(chalk.red(`❌ ${filePath} validation failed: ${error.message}`));
-        if (verbose && error.details) {
-          console.error(chalk.red('Validation errors:'));
-          console.error(error.details);
-        }
-        return false;
-      }
-    }
-    
-    return true;
-  } catch (error) {
-    console.error(chalk.red(`Error processing ${filePath}: ${error.message}`));
-    return false;
-  }
-}
-
-// Validate all files in a directory
-async function validateDirectory(
-  dirPath: string, 
-  schemaType: SchemaType, 
-  recursive: boolean,
-  verbose: boolean
-): Promise<{ total: number; valid: number; invalid: number }> {
-  const stats = { total: 0, valid: 0, invalid: 0 };
-  
-  try {
-    const files = readdirSync(dirPath);
-    
-    for (const file of files) {
-      const fullPath = join(dirPath, file);
-      const fileStat = statSync(fullPath);
-      
-      if (fileStat.isDirectory() && recursive) {
-        // Recursively validate subdirectory
-        const subStats = await validateDirectory(fullPath, schemaType, recursive, verbose);
-        stats.total += subStats.total;
-        stats.valid += subStats.valid;
-        stats.invalid += subStats.invalid;
-      } else if (fileStat.isFile()) {
-        // Only process YAML and JSON files
-        const ext = extname(file).toLowerCase();
-        if (ext === '.yaml' || ext === '.yml' || ext === '.json') {
-          stats.total++;
-          const isValid = await validateFile(fullPath, schemaType, verbose);
-          if (isValid) {
-            stats.valid++;
-          } else {
-            stats.invalid++;
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.error(chalk.red(`Error reading directory ${dirPath}: ${error.message}`));
-  }
-  
-  return stats;
-}
-
-// Main function
-async function main(): Promise<void> {
-  const options = parseArgs();
-  
-  if (options.help || !options.filePath) {
-    showHelp();
-    process.exit(options.help ? 0 : 1);
-  }
-  
-  const fullPath = resolve(process.cwd(), options.filePath);
-  
-  if (!existsSync(fullPath)) {
-    console.error(chalk.red(`File or directory not found: ${fullPath}`));
-    process.exit(1);
-  }
-  
-  const stats = statSync(fullPath);
-  let validationStats = { total: 0, valid: 0, invalid: 0 };
-  
-  console.log(chalk.blue(`Starting validation with schema type: ${options.schemaType}`));
-  
-  if (stats.isDirectory()) {
-    // Validate all files in directory
-    console.log(chalk.blue(`Validating directory: ${fullPath}${options.recursive ? ' (recursive)' : ''}`));
-    validationStats = await validateDirectory(fullPath, options.schemaType, options.recursive, options.verbose);
-  } else {
-    // Validate single file
-    validationStats.total = 1;
-    const isValid = await validateFile(fullPath, options.schemaType, options.verbose);
-    if (isValid) {
-      validationStats.valid = 1;
-    } else {
-      validationStats.invalid = 1;
-    }
-  }
-  
-  // Print summary
-  console.log(chalk.blue('\nValidation Summary:'));
-  console.log(`Total files: ${validationStats.total}`);
-  console.log(chalk.green(`Valid: ${validationStats.valid}`));
-  
-  if (validationStats.invalid > 0) {
-    console.log(chalk.red(`Invalid: ${validationStats.invalid}`));
-    process.exit(1);
-  } else {
-    console.log(chalk.green('All files are valid!'));
-  }
-  
-  // Print cache stats if verbose
-  if (options.verbose) {
-    const cacheStats = schemaValidator.getCacheStats();
-    console.log(chalk.blue('\nCache Stats:'));
-    console.log(`Size: ${cacheStats.size}/${cacheStats.maxSize}`);
-    console.log(`Enabled: ${cacheStats.enabled}`);
-  }
-}
-
-// Run the main function
-main().catch(error => {
-  console.error(chalk.red(`Unhandled error: ${error.message}`));
-  process.exit(1);
+  ]
 });
+
+// Add formats
+addFormats(ajv);
+
+// Add schemas with explicit IDs
+const protocolSchemaWithId = { ...protocolSchema, $id: 'protocol' };
+const modeSchemaWithId = { ...modeSchema, $id: 'mode' };
+const ritualSchemaWithId = { ...ritualSchema, $id: 'ritual' };
+
+// Add schemas
+ajv.addSchema(protocolSchemaWithId, 'protocol');
+ajv.addSchema(modeSchemaWithId, 'mode');
+ajv.addSchema(ritualSchemaWithId, 'ritual');
+
+// Compile validators
+const validators = {
+  protocol: ajv.compile(protocolSchemaWithId),
+  mode: ajv.compile(modeSchemaWithId),
+  ritual: ajv.compile(ritualSchemaWithId)
+};
+
+/**
+ * Validates a YAML file against a schema
+ *
+ * @param filePath Path to the YAML file to validate
+ * @param schemaType Type of schema to validate against (protocol, mode, ritual, or all)
+ * @returns Validation result with isValid flag and any errors
+ */
+export async function validate(filePath: string, schemaType?: SchemaType): Promise<ValidationResult> {
+  try {
+    // Determine schema type from file path if not provided
+    if (!schemaType) {
+      schemaType = determineSchemaTypeFromPath(filePath);
+    }
+
+    // Read and parse the YAML file
+    let content: string;
+    try {
+      content = readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      return {
+        isValid: false,
+        errors: [`Failed to read file: ${error instanceof Error ? error.message : String(error)}`]
+      };
+    }
+
+    // Parse YAML content
+    let data: any;
+    try {
+      data = yaml.parse(content);
+
+      // Check if the file is empty or not valid YAML
+      if (!data) {
+        return {
+          isValid: false,
+          errors: ['File is empty or contains invalid YAML']
+        };
+      }
+    } catch (error) {
+      return {
+        isValid: false,
+        errors: [`Failed to parse YAML: ${error instanceof Error ? error.message : String(error)}`]
+      };
+    }
+
+    // Validate against schema
+    try {
+      if (schemaType === 'all') {
+        // Try to determine the schema type from the content
+        const detectedType = determineSchemaTypeFromContent(data);
+        if (!detectedType) {
+          return {
+            isValid: false,
+            errors: ['Could not determine schema type from content']
+          };
+        }
+        schemaType = detectedType;
+      }
+
+      // Get the appropriate validator
+      if (schemaType === 'all') {
+        return {
+          isValid: false,
+          errors: ['Cannot validate against "all" schema type directly']
+        };
+      }
+
+      const validator = validators[schemaType as keyof typeof validators];
+      if (!validator) {
+        return {
+          isValid: false,
+          errors: [`No validator found for schema type: ${schemaType}`]
+        };
+      }
+
+      // Perform validation
+      const valid = validator(data);
+
+      if (!valid) {
+        // Format validation errors
+        const errors = formatValidationErrors(validator.errors || []);
+        return {
+          isValid: false,
+          errors
+        };
+      }
+
+      return {
+        isValid: true,
+        errors: []
+      };
+    } catch (error) {
+      return {
+        isValid: false,
+        errors: [`Validation error: ${error instanceof Error ? error.message : String(error)}`]
+      };
+    }
+  } catch (error) {
+    // Catch any unexpected errors
+    return {
+      isValid: false,
+      errors: [`Unexpected error: ${error instanceof Error ? error.message : String(error)}`]
+    };
+  }
+}
+
+/**
+ * Format validation errors for better readability
+ */
+function formatValidationErrors(errors: any[]): string[] {
+  if (!errors || errors.length === 0) {
+    return ['Unknown validation error'];
+  }
+
+  return errors.map(error => {
+    const path = error.instancePath || '';
+    const message = error.message || 'Invalid value';
+    const params = error.params ? ` (${JSON.stringify(error.params)})` : '';
+
+    return `${path}: ${message}${params}`;
+  });
+}
+
+/**
+ * Attempts to determine the schema type from the file path
+ */
+function determineSchemaTypeFromPath(filePath: string): SchemaType {
+  const fileName = basename(filePath).toLowerCase();
+
+  if (fileName.includes('protocol')) {
+    return 'protocol';
+  } else if (fileName.includes('mode')) {
+    return 'mode';
+  } else if (fileName.includes('ritual')) {
+    return 'ritual';
+  }
+
+  // Check parent directory
+  const pathParts = filePath.toLowerCase().split('/');
+  if (pathParts.includes('protocols')) {
+    return 'protocol';
+  } else if (pathParts.includes('modes')) {
+    return 'mode';
+  } else if (pathParts.includes('rituals')) {
+    return 'ritual';
+  }
+
+  // Default to protocol if we can't determine
+  return 'protocol';
+}
+
+/**
+ * Attempts to determine the schema type from the content
+ */
+function determineSchemaTypeFromContent(data: any): SchemaType | null {
+  // Protocol typically has modes and rituals
+  if (data.modes && data.rituals) {
+    return 'protocol';
+  }
+
+  // Mode typically has id, name, and entryRitual
+  if (data.id && data.name && data.entryRitual) {
+    return 'mode';
+  }
+
+  // Ritual typically has id and steps
+  if (data.id && data.steps) {
+    return 'ritual';
+  }
+
+  return null;
+}
+
+// CLI interface
+async function main() {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  let filePath: string | undefined;
+  let schemaType: SchemaType | undefined;
+
+  // Parse arguments
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--type' && i + 1 < args.length) {
+      schemaType = args[i + 1] as SchemaType;
+      i++; // Skip the next argument
+    } else if (!filePath) {
+      filePath = args[i];
+    }
+  }
+
+  if (!filePath) {
+    console.error('Please provide a file path');
+    process.exit(1);
+  }
+
+  const result = await validate(filePath, schemaType);
+  console.log({
+    isValid: result.isValid,
+    errors: result.errors
+  });
+
+  if (!result.isValid) {
+    process.exit(1);
+  }
+}
+
+if (process.argv[1] === __filename) {
+  main().catch((error) => {
+    console.error('Error:', error);
+    process.exit(1);
+  });
+}

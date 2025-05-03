@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "outDir": "dist",
-    "esModuleInterop": true,
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./",
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "sourceMap": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@jest/globals": [
+        "node_modules/@jest/globals"
+      ],
+      "#tools/*": [
+        "tools/*"
+      ]
+    }
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }
