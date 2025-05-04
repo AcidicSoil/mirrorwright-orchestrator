@@ -1,0 +1,11 @@
+# Mock .cursorrules for testing
+
+# Assistants
+
+assistants:
+  augment: "Test assistant for augmentation tasks"
+  cline: "Test assistant for cline tasks"
+  strategicai: "Test assistant for strategic AI tasks"
+
+# Other content
+This is other content that should be ignored by the parser.
