@@ -1,0 +1,11 @@
+{
+  "name": "User",
+  "preferences": {
+    "language": "en",
+    "theme": "dark"
+  },
+  "flags": {
+    "skipIntro": true,
+    "verbose": false
+  }
+}

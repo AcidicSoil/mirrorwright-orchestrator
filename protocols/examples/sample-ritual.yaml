@@ -1,0 +1,17 @@
+id: sample-ritual
+description: A sample ritual for testing the enhanced RitualEngine
+steps:
+  - type: prompt
+    content: "What is your name?"
+  - type: action
+    content: "Process user input"
+  - type: prompt
+    content: "Hello, {{name}}!"
+    conditions:
+      - variable: name
+        operator: "!="
+        value: null
+  - type: pause
+    content: "1000"
+  - type: action
+    content: "Complete ritual"

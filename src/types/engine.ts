@@ -9,26 +9,26 @@ export interface IModeEngine {
    * @param modes Array of mode definitions
    */
   initializeModes(modes: ModeDefinition[]): Promise<void>;
-  
+
   /**
    * Get all active modes
    * @returns Record of active modes by ID
    */
   getActiveModes(): Record<string, ModeDefinition>;
-  
+
   /**
    * Activate a specific mode with context
    * @param modeId ID of the mode to activate
    * @param context Context data for the mode
    */
   activateMode(modeId: string, context: Record<string, any>): Promise<void>;
-  
+
   /**
    * Deactivate a specific mode
    * @param modeId ID of the mode to deactivate
    */
   deactivateMode(modeId: string): Promise<void>;
-  
+
   /**
    * Check if a mode is active
    * @param modeId ID of the mode to check
@@ -46,27 +46,39 @@ export interface IRitualEngine {
    * @param rituals Record of ritual definitions by ID
    */
   initializeRituals(rituals: Record<string, RitualDefinition>): Promise<void>;
-  
+
   /**
    * Get all available rituals
    * @returns Record of rituals by ID
    */
   getAvailableRituals(): Record<string, RitualDefinition>;
-  
+
   /**
    * Execute a ritual with context
    * @param ritualId ID of the ritual to execute
    * @param context Context data for the ritual execution
+   * @param options Execution options
    * @returns Result of the ritual execution
    */
-  executeRitual(ritualId: string, context: Record<string, any>): Promise<Record<string, any>>;
-  
+  executeRitual(
+    ritualId: string,
+    context?: Record<string, any>,
+    options?: Record<string, any>
+  ): Promise<Record<string, any>>;
+
   /**
    * Validate a ritual definition against schema
    * @param ritual Ritual definition to validate
    * @returns True if valid, throws error if invalid
    */
-  validateRitual(ritual: RitualDefinition): boolean;
+  validateRitual(ritual: RitualDefinition): Promise<boolean>;
+
+  /**
+   * Abort an active ritual execution
+   * @param executionId Execution ID to abort
+   * @param reason Reason for aborting
+   */
+  abortExecution(executionId: string, reason: Error): void;
 }
 
 /**
@@ -84,7 +96,7 @@ export enum EngineErrorType {
  */
 export class EngineError extends Error {
   type: EngineErrorType;
-  
+
   constructor(message: string, type: EngineErrorType) {
     super(message);
     this.type = type;
