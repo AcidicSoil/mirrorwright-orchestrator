@@ -11,7 +11,7 @@ Mirrorwright Orchestrator is a robust, flexible framework designed to implement 
 - **Protocol Management**: Define, store, and retrieve strategic protocols including canvases, mode definitions, ritual definitions, and templates
 - **Mode & Ritual Engine**: Load mode definitions, parse ritual steps, and manage active state/context
 - **Execution Engine**: Orchestrate agent interactions, execute commands, and manage context between steps
-- **Schema Validation**: Ensure protocol definitions adhere to specified schemas
+- **Schema Validation**: Ensure protocol definitions adhere to specified schemas with optimized AJV implementation
 - **Runtime Container**: Manage agent lifecycle, registration, and message routing between agents
   - **Advanced Message Routing**: Support for broadcast messages, message filtering, and capability-based routing
   - **Message Validation**: Schema-based validation of messages to ensure protocol compliance
@@ -22,19 +22,44 @@ Mirrorwright Orchestrator is a robust, flexible framework designed to implement 
 ```text
 mirrorwright-orchestrator/
 ├── docs/                        # High-level design docs, diagrams
+│   ├── strategic-ai-reference/  # Reference documentation for strategic AI
+│   └── memory-bank-usage.md     # Memory bank usage guide
 ├── protocols/                   # User-defined protocol files (YAML/JSON/MD)
-│   └── default-protocol.yaml
+│   ├── core/                    # Core protocol definitions
+│   │   └── schemas/             # JSON Schema definitions for protocols
+│   └── default-protocol.yaml    # Default protocol configuration
+├── prompt_templates/            # Templates for assistant prompts
 ├── src/
-│   ├── engine/                  # Core execution & mode/ritual engine
-│   ├── orchestrator/            # Runtime container for agent orchestration
-│   ├── agents/                  # Agent interface layer abstractions
+│   ├── agent-interface/         # Agent interface abstractions
 │   ├── cli/                     # CLI entrypoint & commands
-│   ├── examples/                # Example implementations
-│   ├── schemas/                 # JSON Schema definitions
+│   ├── engine/                  # Core execution & mode/ritual engine
+│   │   ├── ModeEngine.ts        # Mode management and lifecycle
+│   │   └── RitualEngine.ts      # Ritual execution and step processing
+│   ├── orchestrator/            # Runtime container for agent orchestration
+│   │   ├── runtime.ts           # Core runtime container implementation
+│   │   └── AdvancedMessageBus.ts # Enhanced message routing
+│   ├── schema/                  # Schema registry and management
+│   │   └── SchemaRegistry.ts    # Centralized schema loading and caching
+│   ├── tools/                   # Utility tools and scripts
+│   │   ├── extractAssistantPrompts.js # Extract assistant prompts from conversations
+│   │   └── prompt-extraction/   # Modular prompt extraction utilities
 │   ├── types/                   # TypeScript type definitions
-│   └── utils/                   # Shared helpers (config loading, logging)
+│   │   ├── engine.ts            # Engine interfaces
+│   │   └── protocol.ts          # Protocol data models
+│   ├── utils/                   # Shared helpers
+│   │   ├── Logger.ts            # Logging utility
+│   │   └── validateSchema.ts    # Schema validation wrapper
+│   └── validation/              # Validation system
+│       ├── ValidatorEngine.ts   # Unified validator with hooks and caching
+│       └── MessageValidator.ts  # Message schema validation
 ├── tests/                       # Unit & integration tests
-└── examples/                    # Sample protocols & ritual runs
+│   ├── engine/                  # Engine component tests
+│   ├── orchestrator/            # Runtime container tests
+│   └── validation/              # Validation system tests
+├── tools/                       # Project tools and utilities
+│   ├── memory_maintenance.py    # Memory bank maintenance
+│   └── recreate-conversation.js # Conversation template creation
+└── cursor-memory-bank/          # Cline memory bank for context persistence
 ```
 
 ## Technology Stack
@@ -43,9 +68,10 @@ mirrorwright-orchestrator/
 - **Package Manager**: pnpm
 - **CLI Framework**: Commander.js
 - **Config & Protocol Files**: YAML with JSON Schema validation
-- **JSON Schema Validation**: AJV
+- **JSON Schema Validation**: AJV with optimizations
 - **Testing**: Vitest
 - **Logging**: Pino
+- **Memory Management**: Cline Memory Bank
 
 ## Getting Started
 
@@ -77,12 +103,44 @@ pnpm dev
 # Run tests
 pnpm test
 
-# Kickoff with the initial prompt
-cat kickoff-prompt-mirrorwright.txt | pnpm dev
+# Validate schemas
+pnpm validate:all
 
-# Reference documentation
-see mirrorwright-reference.md for detailed usage
+# Extract assistant prompts
+node src/tools/extractAssistantPrompts.js extractAssistantPrompts.md assistant-prompts
+
+# Manage memory bank
+python tools/memory_maintenance.py --list
 ```
+
+## Core Components
+
+### Schema Validation System
+
+The Mirrorwright Orchestrator includes a robust schema validation system:
+
+```typescript
+import { schemaValidator } from './utils/validateSchema';
+
+// Validate data against a schema
+try {
+  await schemaValidator.validate(modeData, 'mode');
+  console.log('Mode is valid!');
+} catch (error) {
+  console.error('Validation failed:', error.message);
+}
+
+// Validate a file
+const filePath = 'protocols/default/modes/meta-thinking.yaml';
+await schemaValidator.validateFile(filePath);
+```
+
+The validation system features:
+
+- Centralized schema registry with caching
+- Optimized AJV configuration for performance
+- Pre/post validation hooks for extensibility
+- Detailed error reporting
 
 ### Runtime Container
 
@@ -115,49 +173,56 @@ await container.sendMessage({
 await container.teardown();
 ```
 
-See the example in `src/examples/runtimeExample.ts` for a complete demonstration.
+### Mode & Ritual Engine
 
-### Advanced Message Routing
-
-The Mirrorwright Orchestrator supports advanced message routing features:
+The Mode & Ritual Engine provides a flexible system for defining and executing agent workflows:
 
 ```typescript
-import { createRuntimeContainer, RuntimeContainerOptions } from './src/orchestrator/runtime';
-import { MessageBusType } from './src/orchestrator/MessageBusFactory';
+import { ModeEngine } from './src/engine/ModeEngine';
+import { RitualEngine } from './src/engine/RitualEngine';
 
-// Create a runtime container with advanced message bus
-const options: RuntimeContainerOptions = {
-  messageBusType: MessageBusType.ADVANCED
-};
-const container = createRuntimeContainer(options);
+// Initialize mode engine
+const modeEngine = new ModeEngine();
+await modeEngine.initializeModes(modes);
 
-// Register agents
-container.registerAgent(agent1);
-container.registerAgent(agent2);
+// Activate a mode
+await modeEngine.activateMode('meta-thinking', { depth: 3 });
 
-// Initialize and start the container
-await container.init();
-await container.start();
+// Initialize ritual engine
+const ritualEngine = new RitualEngine();
+await ritualEngine.initializeRituals(rituals);
 
-// Send a broadcast message to all agents
-await container.sendMessage({
-  id: 'broadcast-1',
-  from: 'agent-1',
-  to: '*', // Broadcast to all agents
-  type: 'notification',
-  payload: { level: 'info', message: 'System starting' },
-  timestamp: Date.now()
+// Execute a ritual
+const result = await ritualEngine.executeRitual('reflective-prompting', {
+  input: 'How can I improve this design?'
 });
-
-// Access the advanced message bus for filtering
-const advancedMessageBus = container.messageBus as any;
-if (advancedMessageBus.addFilter) {
-  // Add a filter that only accepts messages of a specific type
-  advancedMessageBus.addFilter('agent-2', (message) => message.type === 'command');
-}
 ```
 
-See the example in `src/examples/advancedRuntimeExample.ts` for a complete demonstration of advanced features.
+The engine system features:
+
+- Event-driven execution pipeline
+- Extensible step handlers
+- Context management between steps
+- Validation integration
+
+### Memory Bank System
+
+The Mirrorwright Orchestrator includes a memory bank system for maintaining context across development sessions:
+
+```bash
+# Save a new memory
+python tools/memory.py save --title "Task Title" --tags tag1,tag2 --notes "Important notes"
+
+# Search existing memories
+python tools/memory.py search --query "keywords"
+```
+
+The memory bank consists of core files:
+
+- **projectbrief.md**: Foundation document that defines core requirements
+- **activeContext.md**: Tracks current work focus
+- **progress.md**: Tracks implementation status
+- **tasks.md**: Central source of truth for task tracking
 
 ## Development
 
@@ -170,11 +235,11 @@ The Mirrorwright Orchestrator uses a multi-agent approach for development:
 - **Cursor Cline**: Strategic planning and requirements clarification
 - **Cursor Augment**: Scaffolding, architecture setup, optimization, and refactoring
 - **Cursor Roo**: Autonomous code-generation and CLI tooling specialist
-- **ChatGPT**: Strategy and meta-thinking
+- **ChatGPT**: Strategy and meta-thinking partner for high-level guidance
 
 For detailed guidelines on using the Augment agent, see [Augment Agent Guidelines](docs/augment-agent-guidelines.md).
 
-For examples of using Roo for code generation, see the example rituals in `protocols/examples/roo-codegen.yaml`.
+For strategic AI conversation templates, see [Strategic AI Conversation Template](prompt_templates/mirrorwright-strategic-ai-conversation-template.md).
 
 ## License
 
