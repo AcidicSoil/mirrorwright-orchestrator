@@ -1,0 +1,59 @@
+# Example Roo Code Generation Rituals
+# These rituals demonstrate how to use the Roo agent for code generation and CLI tooling
+
+# Protocol definition
+id: roo-examples
+name: Roo Code Generation Examples
+version: "1.0.0"
+description: Example rituals demonstrating Roo's code generation capabilities
+
+# Modes
+modes:
+  - id: codegen-mode
+    name: Code Generation Mode
+    entryRitual: setup-codegen
+    exitRitual: cleanup-codegen
+    allowedTransitions: []
+
+# Rituals
+rituals:
+  # Setup ritual
+  setup-codegen:
+    id: setup-codegen
+    description: Prepare the environment for code generation
+    steps:
+      - type: action
+        content: "Initialize code generation environment"
+  
+  # CLI Command Generation Ritual
+  generate-cli-command:
+    id: generate-cli-command
+    description: Generate a CLI command for protocol listing
+    steps:
+      - type: prompt
+        content: "Create an `mwo` CLI command for protocol listing"
+        metadata:
+          agent: roo
+          priority: high
+  
+  # API Endpoint Generation Ritual
+  generate-api-endpoint:
+    id: generate-api-endpoint
+    description: Generate a REST API endpoint for protocol management
+    steps:
+      - type: prompt
+        content: "Create a REST API endpoint for protocol CRUD operations"
+        metadata:
+          agent: roo
+          priority: medium
+          options:
+            framework: express
+            authentication: true
+  
+  # Cleanup ritual
+  cleanup-codegen:
+    id: cleanup-codegen
+    description: Clean up after code generation
+    steps:
+      - type: action
+        content: "Clean up temporary files and resources"

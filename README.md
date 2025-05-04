@@ -169,9 +169,12 @@ The Mirrorwright Orchestrator uses a multi-agent approach for development:
 
 - **Cursor Cline**: Strategic planning and requirements clarification
 - **Cursor Augment**: Scaffolding, architecture setup, optimization, and refactoring
+- **Cursor Roo**: Autonomous code-generation and CLI tooling specialist
 - **ChatGPT**: Strategy and meta-thinking
 
 For detailed guidelines on using the Augment agent, see [Augment Agent Guidelines](docs/augment-agent-guidelines.md).
+
+For examples of using Roo for code generation, see the example rituals in `protocols/examples/roo-codegen.yaml`.
 
 ## License
 

@@ -1,56 +1,7 @@
 import { readFileSync } from 'fs';
-import { basename, join } from 'path';
+import { basename } from 'path';
 import yaml from 'yaml';
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
-
-// Load schemas directly from files
-const protocolSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/protocol.json'), 'utf-8'));
-const modeSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/mode.schema.json'), 'utf-8'));
-const ritualSchema = JSON.parse(readFileSync(join(__dirname, '../src/schemas/ritual.schema.json'), 'utf-8'));
-
-export type SchemaType = 'protocol' | 'mode' | 'ritual' | 'all';
-
-export interface ValidationResult {
-  isValid: boolean;
-  errors: string[];
-}
-
-// Create and configure Ajv instance
-const ajv = new Ajv({
-  allErrors: true,
-  verbose: true,
-  strictSchema: false,
-  strictTypes: false,
-  schemas: [
-    {
-      $id: "https://json-schema.org/draft-07/schema#",
-      $schema: "https://json-schema.org/draft-07/schema#",
-      title: "Core schema meta-schema",
-      type: ["object", "boolean"]
-    }
-  ]
-});
-
-// Add formats
-addFormats(ajv);
-
-// Add schemas with explicit IDs
-const protocolSchemaWithId = { ...protocolSchema, $id: 'protocol' };
-const modeSchemaWithId = { ...modeSchema, $id: 'mode' };
-const ritualSchemaWithId = { ...ritualSchema, $id: 'ritual' };
-
-// Add schemas
-ajv.addSchema(protocolSchemaWithId, 'protocol');
-ajv.addSchema(modeSchemaWithId, 'mode');
-ajv.addSchema(ritualSchemaWithId, 'ritual');
-
-// Compile validators
-const validators = {
-  protocol: ajv.compile(protocolSchemaWithId),
-  mode: ajv.compile(modeSchemaWithId),
-  ritual: ajv.compile(ritualSchemaWithId)
-};
+import { validatorEngine, SchemaType, ValidationResult } from '../src/validation/ValidatorEngine';
 
 /**
  * Validates a YAML file against a schema
@@ -96,58 +47,8 @@ export async function validate(filePath: string, schemaType?: SchemaType): Promi
       };
     }
 
-    // Validate against schema
-    try {
-      if (schemaType === 'all') {
-        // Try to determine the schema type from the content
-        const detectedType = determineSchemaTypeFromContent(data);
-        if (!detectedType) {
-          return {
-            isValid: false,
-            errors: ['Could not determine schema type from content']
-          };
-        }
-        schemaType = detectedType;
-      }
-
-      // Get the appropriate validator
-      if (schemaType === 'all') {
-        return {
-          isValid: false,
-          errors: ['Cannot validate against "all" schema type directly']
-        };
-      }
-
-      const validator = validators[schemaType as keyof typeof validators];
-      if (!validator) {
-        return {
-          isValid: false,
-          errors: [`No validator found for schema type: ${schemaType}`]
-        };
-      }
-
-      // Perform validation
-      const valid = validator(data);
-
-      if (!valid) {
-        // Format validation errors
-        const errors = formatValidationErrors(validator.errors || []);
-        return {
-          isValid: false,
-          errors
-        };
-      }
-
-      return {
-        isValid: true,
-        errors: []
-      };
-    } catch (error) {
-      return {
-        isValid: false,
-        errors: [`Validation error: ${error instanceof Error ? error.message : String(error)}`]
-      };
-    }
+    // Use the ValidatorEngine to validate the data
+    return validatorEngine.validate(data, schemaType);
   } catch (error) {
     // Catch any unexpected errors
     return {
@@ -155,23 +56,6 @@ export async function validate(filePath: string, schemaType?: SchemaType): Promi
       errors: [`Unexpected error: ${error instanceof Error ? error.message : String(error)}`]
     };
   }
-}
-
-/**
- * Format validation errors for better readability
- */
-function formatValidationErrors(errors: any[]): string[] {
-  if (!errors || errors.length === 0) {
-    return ['Unknown validation error'];
-  }
-
-  return errors.map(error => {
-    const path = error.instancePath || '';
-    const message = error.message || 'Invalid value';
-    const params = error.params ? ` (${JSON.stringify(error.params)})` : '';
-
-    return `${path}: ${message}${params}`;
-  });
 }
 
 /**
@@ -202,27 +86,7 @@ function determineSchemaTypeFromPath(filePath: string): SchemaType {
   return 'protocol';
 }
 
-/**
- * Attempts to determine the schema type from the content
- */
-function determineSchemaTypeFromContent(data: any): SchemaType | null {
-  // Protocol typically has modes and rituals
-  if (data.modes && data.rituals) {
-    return 'protocol';
-  }
-
-  // Mode typically has id, name, and entryRitual
-  if (data.id && data.name && data.entryRitual) {
-    return 'mode';
-  }
-
-  // Ritual typically has id and steps
-  if (data.id && data.steps) {
-    return 'ritual';
-  }
-
-  return null;
-}
+// Note: We're now using the determineSchemaTypeFromContent method from ValidatorEngine
 
 // CLI interface
 async function main() {

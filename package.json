@@ -9,11 +9,12 @@
     "test": "vitest",
     "benchmark": "vitest bench",
     "validate:schema": "ts-node src/utils/validateSchema.ts",
-    "validate": "ts-node tools/validateProtocol.ts",
-    "validate:ritual": "ts-node tools/validateProtocol.ts --type ritual",
-    "validate:mode": "ts-node tools/validateProtocol.ts --type mode",
-    "validate:protocol": "ts-node tools/validateProtocol.ts --type protocol",
-    "validate:all": "ts-node tools/validateProtocol.ts --type all"
+    "validate": "ts-node src/cli/validate.ts",
+    "validate:ritual": "ts-node src/cli/validate.ts --type ritual",
+    "validate:mode": "ts-node src/cli/validate.ts --type mode",
+    "validate:protocol": "ts-node src/cli/validate.ts --type protocol",
+    "validate:all": "ts-node src/cli/validate.ts --type all",
+    "validate:legacy": "ts-node tools/validateProtocol.ts"
   },
   "dependencies": {
     "@types/chai": "^5.2.1",
