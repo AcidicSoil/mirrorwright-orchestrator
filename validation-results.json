@@ -1,0 +1,30 @@
+{
+  "valid": [
+    "prompt_templates\\assistant-prompt-extraction-config.md",
+    "prompt_templates\\augment-prompt-extractor-update.md",
+    "prompt_templates\\augment-refactor-prompt.md",
+    "prompt_templates\\cline-architecture-prompt.md",
+    "prompt_templates\\cline-prompt-ci-validation.md",
+    "prompt_templates\\codebase-utilization-config.md",
+    "prompt_templates\\cursorscan-prompt-analytics.md",
+    "prompt_templates\\cursorscan-prompt.md",
+    "prompt_templates\\gpt-4.5-prompt-generator.md",
+    "prompt_templates\\gpt-4o-mini-prompt-extractor.md",
+    "prompt_templates\\gpt-4o-prompt-validator.md",
+    "prompt_templates\\memory-bank-config.md",
+    "prompt_templates\\memory-bank-tags.md",
+    "prompt_templates\\mirrorwright-strategic-ai-conversation-example.md",
+    "prompt_templates\\mirrorwright-strategic-ai-conversation-template.md",
+    "prompt_templates\\prompt-frontmatter-standard.md",
+    "prompt_templates\\promptrouter-prompt.md",
+    "prompt_templates\\promptrouter-template-selection.md",
+    "prompt_templates\\README.md",
+    "prompt_templates\\roo-cli-prompt.md",
+    "prompt_templates\\roo-prompt-generator.md",
+    "prompt_templates\\strategicai-prompt-architecture.md",
+    "prompt_templates\\strategicai-prompt.md",
+    "prompt_templates\\vibecheck-prompt-standard.md",
+    "prompt_templates\\vibecheck-prompt.md"
+  ],
+  "invalid": []
+}

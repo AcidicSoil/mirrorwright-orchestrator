@@ -1,196 +1,127 @@
 ## cline
 
-### 🔧 **Prompt for Cursor Cline: Ritual & Mode Schema Setup**
+# Prompt for Cursor Cline: Architecture Planning for Ritual Engine
 
-```md
-# Cursor Cline: Schema + Validator Setup
+Please develop a comprehensive architecture plan for the Ritual Engine component that will:
 
-Implement the following components:
+1. Define the core interfaces and classes needed for the Ritual Engine
+2. Establish a clear separation between protocol definitions and execution logic
+3. Outline how rituals will be loaded, validated, and executed
+4. Propose a strategy for handling conditional steps and error recovery
+5. Ensure compatibility with the existing RuntimeContainer and MessageBus
 
-1. **TypeScript Interfaces**
-   - `Protocol`, `Mode`, `Ritual`, `RitualStep`
+The architecture should follow TypeScript best practices with strict typing and should be designed for extensibility as new ritual types are added in the future.
 
-2. **JSON Schemas**
-   - `schemas/protocol.schema.json`
-   - `schemas/mode.schema.json`
-   - `schemas/ritual.schema.json`
-
-3. **Validator Utility**
-   - Create `src/utils/validateSchema.ts` that:
-     - Uses AJV to validate any of the three schemas
-     - Accepts a path and schema type
-     - Throws on error with formatted output
-
-Ensure compatibility with the CLI runner (in `src/cli/index.ts`) and prepare a stub command to load a ritual from YAML and print its steps.
-```
-
-* * *
-
-### ✨ **Prompt for Cursor Augment: CLI + Engine Enhancement**
-
-```md
-# Cursor Augment: Ritual Execution Loop + CLI Enhancements
-
-Refactor CLI and core engine components as follows:
-
-1. **CLI Command Updates**
-   - Add `run` command that accepts:
-     - `--ritual-id` or positional argument
-     - Optional `--mode-id`
-   - Load protocol, ritual, and mode from `protocols/default`
-
-2. **Ritual Engine**
-   - Parse ritual steps and output each step prompt to console
-   - Apply any `metaCognitiveHooks` via comment decorators
-   - Scaffold internal execution loop for rituals
-
-3. **Logging Hook**
-   - Log each step to `split-vision-logbook.log`
-   - Format: timestamp, ritual ID, step prompt, mode context
-
-This establishes an early interactive feedback loop while enabling safe iteration.
-```
-
-* * *
-
-🔁 Strategic AI Transition Prompt (Use in ChatGPT)
+Label the PR: `[#architecture] Ritual Engine Component Design`
 
 ---
 
-## augment
+## roo
 
-Prompt for Cursor Augment:
-Refactor and optimize the `ModeEngine` and `RitualEngine` modules to be modular, extensible, and schema-driven. Improve error handling, isolate side effects, and suggest unit tests.
-```
+# Prompt for Cursor Roo: CLI Tool for Protocol Validation
 
-* * *
+As the autonomous code-generation and CLI tooling specialist, please develop a command-line interface tool that will:
 
-🧭 Summary: Mirrorwright Phase Transition Checklist
----------------------------------------------------
+1. Validate protocol files against their schemas
+2. Generate TypeScript types from protocol schemas
+3. Provide helpful error messages for invalid protocols
+4. Support batch validation of multiple protocol files
+5. Include a --fix option to attempt automatic repairs of common issues
 
-| Phase | Status |
-| --- | --- |
-| Project Scaffolded (Cline) | ✅ Done |
-| Scratchpad + Memory Update | ✅ Now |
-| Ritual/Mode Schema Design | 🚧 Next |
-| CLI Smoke Test | 🟡 In Progress |
-| Protocol Validator (AJV) | ⏭️ Upcoming |
+The CLI should be implemented in TypeScript with a focus on performance and usability. It should integrate with the existing validator engine and follow the project's established patterns for CLI tools.
 
-* * *
-
-Would you like a follow-up command set to initialize `ritual.yaml`, `mode.yaml`, and a basic CLI ritual runner stub for immediate iteration?
-
-## Prompt:
-sure and transition prompts for assistants for cursor IDE
-
-## Response:
-Excellent. Here's a clean continuation strategy for you — including follow-up command sets, assistant handoff prompts for the Cursor IDE agents (Cline, Augment), and model context transitions aligned with the `.cursorrules` system.
-
-* * *
-
-✅ Immediate Follow-Up: Command Set to Seed Ritual/Mode Files
-------------------------------------------------------------
-
-### 📁 **File Creation Commands**
-
-```bash
-# Create initial structure
-mkdir -p protocols/default/rituals
-mkdir -p protocols/default/modes
-mkdir -p protocols/default/templates
-
-# Seed basic ritual YAML
-cat > protocols/default/rituals/init-reflection.yaml <<EOF
-id: init-reflection
-title: Initial Reflection Ritual
-description: Establish baseline alignment for a new protocol
-steps:
-  - promptTemplate: reflection-init.md
-    expectedOutputFormat: markdown
-    metaCognitiveHooks:
-      - "self-check: alignment"
-EOF
-
-# Seed basic mode YAML
-cat > protocols/default/modes/meta-thinking.yaml <<EOF
-id: meta-thinking
-title: Meta-Thinking Mode
-description: Enables recursive reflection and protocol alignment
-contextModifiers:
-  focus: "high"
-activeRituals:
-  - init-reflection
-EOF
-
-# Seed prompt template
-cat > protocols/default/templates/reflection-init.md <<EOF
+Label the PR: `[#tools] Protocol Validation CLI`
 
 ---
 
 ## vibecheck
 
-# Cursor vibecheck: Auto-generated Prompt
+# Prompt for Cursor VibeCheck: Protocol Consistency Validator
 
-Based on role: "Flag deviations from core orchestration tone, scope, or clarity across all agent communications."
+As the assistant responsible for flagging deviations from core orchestration tone, scope, or clarity, please develop a protocol consistency validator that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Analyze protocol definitions for consistency in naming conventions and structure
+2. Identify potential ambiguities or unclear specifications in ritual steps
+3. Flag deviations from established patterns in mode definitions
+4. Suggest improvements to maintain clarity and coherence across the protocol
+5. Ensure that all protocol components align with the project's architectural vision
 
-Current focus areas would be extracted from project state analysis.
+The validator should be implemented as a module that can be integrated with the existing validation pipeline and should provide actionable feedback for improving protocol quality.
 
+Label the PR: `[#quality] Protocol Consistency Validator`
 
 ---
 
 ## cursorscan
 
-# Cursor cursorscan: Auto-generated Prompt
+# Prompt for Cursor CursorScan: Protocol Lifecycle Tracker
 
-Based on role: "Map all file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata."
+As the assistant responsible for mapping file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata, please develop a protocol lifecycle tracking system that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Track changes to protocol definitions over time
+2. Associate changes with specific agents or contributors
+3. Generate reports on protocol evolution and maturity
+4. Maintain a history of prompt variations used for each protocol component
+5. Provide insights into which parts of the protocol are most actively developed or stable
 
-Current focus areas would be extracted from project state analysis.
+The tracking system should be implemented as a module that integrates with the existing codebase and should provide both programmatic access and CLI reporting capabilities.
 
+Label the PR: `[#metadata] Protocol Lifecycle Tracking System`
 
 ---
 
 ## promptrouter
 
-# Cursor promptrouter: Auto-generated Prompt
+# Prompt for Cursor PromptRouter: Intent-Based Routing System
 
-Based on role: "Route user prompts to optimal model and protocol phase context based on task intent and current orchestration scope."
+As the assistant responsible for routing user prompts to the optimal model and protocol phase context, please develop an intent-based routing system that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Analyze user prompts to determine the underlying intent and task type
+2. Select the most appropriate model (GPT-4o, GPT-4.5, GPT-4o-mini) based on the task requirements
+3. Determine the relevant protocol phase context for the prompt
+4. Route the prompt to the appropriate assistant with the necessary context
+5. Track routing decisions and outcomes to improve future routing accuracy
 
-Current focus areas would be extracted from project state analysis.
+The routing system should be implemented as a module that integrates with the existing orchestration framework and should be configurable to adapt to new models and protocol phases as they are added.
 
+Label the PR: `[#orchestration] Intent-Based Prompt Routing System`
 
 ---
 
 ## strategicai
 
-# Cursor strategicai: Auto-generated Prompt
+# Prompt for Cursor StrategicAI: Protocol-Aligned Prompt Blueprint Generator
 
-Based on role: "Transform user intent into structured, phase-aware prompt blueprints aligned with protocol objectives."
+As the assistant responsible for transforming user intent into structured, phase-aware prompt blueprints, please develop a prompt blueprint generator that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Convert high-level user requirements into structured prompt templates
+2. Align prompt structures with protocol objectives and constraints
+3. Incorporate phase-specific context and guidance into prompts
+4. Generate variations of prompts optimized for different models (GPT-4o, GPT-4.5, GPT-4o-mini)
+5. Include appropriate memory hooks and next-step handoffs in generated prompts
 
-Current focus areas would be extracted from project state analysis.
+The blueprint generator should be implemented as a module that can be used programmatically or via CLI and should follow the established patterns for prompt templates in the project.
 
+Label the PR: `[#prompts] Protocol-Aligned Blueprint Generator`
+
+---
+
+## augment
+
+# Prompt for Cursor Augment: Enhance Prompt Extractor
+
+Please refactor `src/tools/extractAssistantPrompts.ts` to:
+1. Modularize the following:
+   - prompt extraction logic
+   - file IO
+   - assistant registry loading
+   - project state scanner
+2. Add Vitest test coverage for:
+   - `extractPromptsFromConversation()`
+   - `loadAssistantsFromCursorRules()`
+   - `savePrompts()`
+3. Ensure CLI usage remains intact (`ts-node` compatibility)
+
+Label the PR: `[#test] Add test coverage + refactor extractAssistantPrompts`
 
 ---

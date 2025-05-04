@@ -12,6 +12,26 @@ export interface Assistant {
 }
 
 /**
+ * Represents frontmatter data in a prompt template
+ */
+export interface Frontmatter {
+  agent: string;
+  purpose: string;
+  id: string;
+  version: string;
+  [key: string]: any;
+}
+
+/**
+ * Result of frontmatter parsing
+ */
+export interface FrontmatterParseResult {
+  frontmatter: Frontmatter | null;
+  content: string;
+  hasFrontmatter: boolean;
+}
+
+/**
  * Represents an extracted prompt from a conversation log
  */
 export interface ExtractedPrompt {
@@ -26,6 +46,7 @@ export interface ExtractedPrompt {
  */
 export interface PromptExtractorInterface {
   extractPromptsFromConversation(filePath: string): ExtractedPrompt[];
+  extractPromptsFromTemplates(templatesDir: string): ExtractedPrompt[];
 }
 
 /**
@@ -55,7 +76,8 @@ export interface ProjectAnalyzerInterface {
  */
 export interface AssistantPromptExtractorInterface {
   extractPromptsFromConversation(filePath: string): ExtractedPrompt[];
+  extractPromptsFromTemplates(templatesDir: string): ExtractedPrompt[];
   generateMissingPrompts(existingPrompts: ExtractedPrompt[], projectState: string): Record<string, string>;
   savePrompts(prompts: Record<string, string>, outputDir: string): void;
-  run(conversationPath: string, outputDir: string): void;
+  run(conversationPath: string, outputDir: string, templatesDir?: string): void;
 }

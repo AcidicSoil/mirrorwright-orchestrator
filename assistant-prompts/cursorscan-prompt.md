@@ -1,11 +1,13 @@
-# Cursor cursorscan: Auto-generated Prompt
+# Prompt for Cursor CursorScan: Protocol Lifecycle Tracker
 
-Based on role: "Map all file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata."
+As the assistant responsible for mapping file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata, please develop a protocol lifecycle tracking system that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Track changes to protocol definitions over time
+2. Associate changes with specific agents or contributors
+3. Generate reports on protocol evolution and maturity
+4. Maintain a history of prompt variations used for each protocol component
+5. Provide insights into which parts of the protocol are most actively developed or stable
 
-Current focus areas would be extracted from project state analysis.
+The tracking system should be implemented as a module that integrates with the existing codebase and should provide both programmatic access and CLI reporting capabilities.
+
+Label the PR: `[#metadata] Protocol Lifecycle Tracking System`

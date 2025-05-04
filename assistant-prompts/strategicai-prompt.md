@@ -1,11 +1,13 @@
-# Cursor strategicai: Auto-generated Prompt
+# Prompt for Cursor StrategicAI: Protocol-Aligned Prompt Blueprint Generator
 
-Based on role: "Transform user intent into structured, phase-aware prompt blueprints aligned with protocol objectives."
+As the assistant responsible for transforming user intent into structured, phase-aware prompt blueprints, please develop a prompt blueprint generator that will:
 
-This prompt would be generated based on:
-1. The assistant's role description
-2. Current project state
-3. Implementation patterns
-4. Next logical development steps
+1. Convert high-level user requirements into structured prompt templates
+2. Align prompt structures with protocol objectives and constraints
+3. Incorporate phase-specific context and guidance into prompts
+4. Generate variations of prompts optimized for different models (GPT-4o, GPT-4.5, GPT-4o-mini)
+5. Include appropriate memory hooks and next-step handoffs in generated prompts
 
-Current focus areas would be extracted from project state analysis.
+The blueprint generator should be implemented as a module that can be used programmatically or via CLI and should follow the established patterns for prompt templates in the project.
+
+Label the PR: `[#prompts] Protocol-Aligned Blueprint Generator`

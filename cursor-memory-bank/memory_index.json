@@ -32,6 +32,29 @@
       ],
       "created": "2025-05-04T09:05:07.212312",
       "file_path": "cursor-memory-bank\\assistant-prompt-extraction-automation-2025-05-04.md"
+    },
+    {
+      "id": "cline-memory-bank-setup-2025-05-04",
+      "title": "Cline Memory Bank Setup",
+      "tags": [
+        "setup",
+        "memory-bank",
+        "cline"
+      ],
+      "created": "2025-05-04T16:21:16.731756",
+      "file_path": "cursor-memory-bank\\cline-memory-bank-setup-2025-05-04.md"
+    },
+    {
+      "id": "cline-memory-bank-future-improvements-2025-05-04",
+      "title": "Cline Memory Bank Future Improvements",
+      "tags": [
+        "memory-bank",
+        "context-retention",
+        "future-improvements",
+        "cline"
+      ],
+      "created": "2025-05-04T16:24:39.508597",
+      "file_path": "cursor-memory-bank\\cline-memory-bank-future-improvements-2025-05-04.md"
     }
   ]
 }

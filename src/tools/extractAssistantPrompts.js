@@ -2,7 +2,7 @@
 
 /**
  * Assistant Prompt Extraction CLI Tool
- * 
+ *
  * This script provides a command-line interface for extracting and generating
  * assistant prompts from conversation logs for the Mirrorwright Orchestrator.
  */
@@ -30,15 +30,15 @@ class Logger {
   info(message) {
     console.log(`${colors.bright}${colors.blue}[INFO]${colors.reset} ${message}`);
   }
-  
+
   success(message) {
     console.log(`${colors.bright}${colors.green}[SUCCESS]${colors.reset} ${message}`);
   }
-  
+
   warn(message) {
     console.log(`${colors.bright}${colors.yellow}[WARNING]${colors.reset} ${message}`);
   }
-  
+
   error(message) {
     console.error(`${colors.bright}${colors.red}[ERROR]${colors.reset} ${message}`);
   }
@@ -53,11 +53,11 @@ function loadAssistantsFromCursorRules() {
   try {
     const cursorRulesPath = path.resolve(process.cwd(), '.cursorrules');
     const content = fs.readFileSync(cursorRulesPath, 'utf8');
-    
+
     // Extract assistant definitions using regex
     const assistantSection = content.match(/assistants:([\s\S]*?)(?=\n\n|$)/)?.[1] || '';
     const assistantMatches = [...assistantSection.matchAll(/(\w+):\s*"([^"]+)"/g)];
-    
+
     return assistantMatches.map(match => ({
       name: match[1],
       description: match[2]
@@ -76,14 +76,15 @@ function extractPromptsFromConversation(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
     const extractedPrompts = [];
-    
+
     // Common patterns for assistant prompts in conversation logs
     const promptPatterns = [
       /# Cursor (\w+):/i,
       /Prompt for Cursor (\w+):/i,
-      /# (\w+): /i
+      /# (\w+): /i,
+      /# Prompt for Cursor (\w+):/i
     ];
-    
+
     for (let i = 0; i < lines.length; i++) {
       for (const pattern of promptPatterns) {
         const match = lines[i].match(pattern);
@@ -91,29 +92,29 @@ function extractPromptsFromConversation(filePath) {
           const assistant = match[1].toLowerCase();
           let promptContent = lines[i] + '\n';
           let j = i + 1;
-          
+
           // Collect prompt content until we hit a markdown code block end or section break
           const isCodeBlock = lines[i].includes('```');
           let inCodeBlock = isCodeBlock;
-          
+
           while (j < lines.length) {
             // Check for section breaks or end of content
-            if (!inCodeBlock && 
-                (lines[j].startsWith('## ') || 
-                 lines[j].startsWith('---') || 
+            if (!inCodeBlock &&
+                (lines[j].startsWith('## ') ||
+                 lines[j].startsWith('---') ||
                  (lines[j].trim() === '' && j+1 < lines.length && lines[j+1].trim() === ''))) {
               break;
             }
-            
+
             // Track code blocks
             if (lines[j].includes('```')) {
               inCodeBlock = !inCodeBlock;
             }
-            
+
             promptContent += lines[j] + '\n';
             j++;
           }
-          
+
           if (promptContent.trim()) {
             extractedPrompts.push({
               assistant,
@@ -122,14 +123,14 @@ function extractPromptsFromConversation(filePath) {
               lineEnd: j
             });
           }
-          
+
           // Skip to the end of this prompt
           i = j;
           break;
         }
       }
     }
-    
+
     return extractedPrompts;
   } catch (error) {
     logger.error(`Failed to extract prompts from ${filePath}: ${error}`);
@@ -187,7 +188,7 @@ function getProjectState() {
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name)
       .filter(name => !name.startsWith('.') && name !== 'node_modules');
-    
+
     // Get recent git commits to understand recent changes
     let recentCommits = '';
     try {
@@ -195,7 +196,7 @@ function getProjectState() {
     } catch (e) {
       recentCommits = 'No git history available';
     }
-    
+
     // Check for package.json to understand dependencies
     let dependencies = '';
     try {
@@ -204,7 +205,7 @@ function getProjectState() {
     } catch (e) {
       dependencies = 'No package.json found';
     }
-    
+
     return `
 Project Structure:
 - Directories: ${dirs.join(', ')}
@@ -235,19 +236,19 @@ function savePrompts(prompts, outputDir) {
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
-    
+
     // Save individual prompt files
     for (const [assistant, prompt] of Object.entries(prompts)) {
       const filePath = path.join(outputDir, `${assistant}-prompt.md`);
       fs.writeFileSync(filePath, prompt);
       logger.success(`Saved prompt for ${assistant} to ${filePath}`);
     }
-    
+
     // Save combined prompts file
     const combinedContent = Object.entries(prompts)
       .map(([assistant, prompt]) => `## ${assistant}\n\n${prompt}\n\n---\n`)
       .join('\n');
-    
+
     const combinedPath = path.join(outputDir, 'all-assistant-prompts.md');
     fs.writeFileSync(combinedPath, combinedContent);
     logger.success(`Saved combined prompts to ${combinedPath}`);
@@ -264,46 +265,46 @@ function main() {
   const args = process.argv.slice(2);
   const conversationPath = args[0] || 'extractAssistantPrompts.md';
   const outputDir = args[1] || 'assistant-prompts';
-  
+
   logger.info(`Extracting prompts from ${conversationPath}`);
-  
+
   // Load assistants from .cursorrules
   const assistants = loadAssistantsFromCursorRules();
   logger.info(`Found ${assistants.length} assistants in .cursorrules`);
-  
+
   // Extract existing prompts
   const extractedPrompts = extractPromptsFromConversation(conversationPath);
   logger.info(`Found ${extractedPrompts.length} existing prompts in conversation`);
-  
+
   // Create a map of assistant name to prompt
   const promptsByAssistant = {};
   for (const prompt of extractedPrompts) {
     promptsByAssistant[prompt.assistant] = prompt.prompt;
   }
-  
+
   // Get project state
   const projectState = getProjectState();
-  
+
   // Identify missing assistants
   const missingAssistants = assistants.filter(
     assistant => !promptsByAssistant[assistant.name]
   );
-  
+
   if (missingAssistants.length > 0) {
     logger.warn(`Missing prompts for ${missingAssistants.length} assistants`);
-    
+
     // In a real implementation, this would use an LLM to generate the prompts
     // For now, we'll just create placeholder prompts
     for (const assistant of missingAssistants) {
       logger.info(`Generating placeholder prompt for ${assistant.name}`);
-      
+
       // Generate LLM prompt (in production, this would be sent to an LLM)
       const llmPrompt = generateLLMPrompt(
-        assistant.name, 
+        assistant.name,
         assistant.description,
         projectState
       );
-      
+
       // For now, just create a placeholder
       promptsByAssistant[assistant.name] = `# Cursor ${assistant.name}: Auto-generated Prompt
 
@@ -317,13 +318,13 @@ This prompt would be generated based on:
 
 Current focus areas would be extracted from project state analysis.
 `;
-      
+
       // In production, you would use:
       // const generatedPrompt = await callLLM(llmPrompt);
       // promptsByAssistant[assistant.name] = generatedPrompt;
     }
   }
-  
+
   // Save prompts
   savePrompts(promptsByAssistant, outputDir);
   logger.success('Assistant prompt extraction complete');

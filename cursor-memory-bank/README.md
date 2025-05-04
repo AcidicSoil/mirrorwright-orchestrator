@@ -1,18 +1,18 @@
-# Memory Bank System v0.6-beta
+# Memory Bank System v0.7-beta
 
-A modular, graph-based task management system that integrates with Cursor custom modes for efficient development workflows.
+A modular, graph-based task management system that integrates with Cursor custom modes and Cline Memory Bank for efficient development workflows.
 
 ```mermaid
 graph TD
     Main["Memory Bank System"] --> Modes["Custom Modes"]
     Main --> Rules["JIT Rule Loading"]
     Main --> Visual["Visual Process Maps"]
-    
+
     Modes --> VAN["VAN: Initialization"]
     Modes --> PLAN["PLAN: Task Planning"]
     Modes --> CREATIVE["CREATIVE: Design"]
     Modes --> IMPLEMENT["IMPLEMENT: Building"]
-    
+
     style Main fill:#4da6ff,stroke:#0066cc,color:white
     style Modes fill:#f8d486,stroke:#e8b84d
     style Rules fill:#80ffaa,stroke:#4dbb5f
@@ -23,7 +23,20 @@ graph TD
 
 ## About Memory Bank
 
-Memory Bank is a personal project that provides a structured approach to development using specialized modes for different phases of the development process. It uses a Just-In-Time (JIT) rule loading architecture that loads only the rules needed for each phase, optimizing context usage and providing tailored guidance.
+Memory Bank is a structured approach to development using specialized modes for different phases of the development process. It uses a Just-In-Time (JIT) rule loading architecture that loads only the rules needed for each phase, optimizing context usage and providing tailored guidance.
+
+### Cline Memory Bank Integration
+
+This version includes integration with Cline Memory Bank, which allows Cline to maintain context across sessions. The Cline Memory Bank consists of six core files:
+
+1. **projectbrief.md**: Foundation document that defines core requirements and goals
+2. **productContext.md**: Explains why the project exists and the problems it solves
+3. **activeContext.md**: Tracks current work focus and recent changes
+4. **systemPatterns.md**: Documents system architecture and key design patterns
+5. **techContext.md**: Lists technologies used and development setup
+6. **progress.md**: Tracks what works and what's left to build
+
+To use the Cline Memory Bank, add the `.clinerules-memory-bank` content to your `.clinerules` file or reference it in your conversations with Cline. See the [Memory Bank Usage Guide](../docs/memory-bank-usage.md) for more details.
 
 ### Beyond Basic Custom Modes
 
@@ -216,21 +229,46 @@ your-project/
 ```mermaid
 graph LR
     subgraph "Memory Bank Files"
-        Tasks["tasks.md<br>Source of Truth"]
+        Project["projectbrief.md<br>Foundation"]
+        Product["productContext.md<br>Problem & Solution"]
+        System["systemPatterns.md<br>Architecture"]
+        Tech["techContext.md<br>Technology Stack"]
         Active["activeContext.md<br>Current Focus"]
         Progress["progress.md<br>Implementation Status"]
+        Tasks["tasks.md<br>Task Tracking"]
         Creative["creative-*.md<br>Design Decisions"]
     end
-    
-    style Tasks fill:#f9d77e,stroke:#d9b95c,stroke-width:3px
+
+    Project --> Product
+    Project --> System
+    Project --> Tech
+    Product --> Active
+    System --> Active
+    Tech --> Active
+    Active --> Progress
+
+    style Project fill:#f9d77e,stroke:#d9b95c,stroke-width:3px
+    style Product fill:#a8d5ff,stroke:#88b5e0
+    style System fill:#c5e8b7,stroke:#a5c897
+    style Tech fill:#f4b8c4,stroke:#d498a4
     style Active fill:#a8d5ff,stroke:#88b5e0
     style Progress fill:#c5e8b7,stroke:#a5c897
+    style Tasks fill:#f9d77e,stroke:#d9b95c
     style Creative fill:#f4b8c4,stroke:#d498a4
 ```
 
-- **tasks.md**: Central source of truth for task tracking
+### Cline Memory Bank Core Files
+
+- **projectbrief.md**: Foundation document that defines core requirements and goals
+- **productContext.md**: Explains why the project exists and the problems it solves
+- **systemPatterns.md**: Documents system architecture and key design patterns
+- **techContext.md**: Lists technologies used and development setup
 - **activeContext.md**: Maintains focus of current development phase
 - **progress.md**: Tracks implementation status
+
+### Custom Mode Files
+
+- **tasks.md**: Central source of truth for task tracking
 - **creative-*.md**: Design decision documents generated during CREATIVE mode
 
 ## Troubleshooting
@@ -277,4 +315,4 @@ This is a personal hobby project that brings me joy to build and develop. I welc
 
 ---
 
-*Note: This README is for v0.6-beta and subject to change as the system evolves.* 
+*Note: This README is for v0.6-beta and subject to change as the system evolves.*

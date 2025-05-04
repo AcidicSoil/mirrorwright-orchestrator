@@ -1,14 +1,14 @@
 /**
  * AssistantPromptExtractor
- * 
+ *
  * Main class that orchestrates the prompt extraction process
  */
 
 import { Logger } from '../../utils/Logger';
-import { 
-  Assistant, 
-  ExtractedPrompt, 
-  AssistantPromptExtractorInterface 
+import {
+  Assistant,
+  ExtractedPrompt,
+  AssistantPromptExtractorInterface
 } from './types';
 import { AssistantRegistry } from './extractors/AssistantRegistry';
 import { PromptExtractor } from './extractors/PromptExtractor';
@@ -21,7 +21,7 @@ export class AssistantPromptExtractor implements AssistantPromptExtractorInterfa
   private promptExtractor: PromptExtractor;
   private fileIO: FileIO;
   private projectAnalyzer: ProjectAnalyzer;
-  
+
   constructor(cursorRulesPath?: string) {
     this.logger = new Logger();
     this.assistantRegistry = new AssistantRegistry(cursorRulesPath);
@@ -41,34 +41,34 @@ export class AssistantPromptExtractor implements AssistantPromptExtractorInterfa
    * Generate missing prompts based on project state and assistant roles
    */
   public generateMissingPrompts(
-    existingPrompts: ExtractedPrompt[], 
+    existingPrompts: ExtractedPrompt[],
     projectState: string
   ): Record<string, string> {
     const promptsByAssistant: Record<string, string> = {};
-    
+
     // First, add all existing prompts
     for (const prompt of existingPrompts) {
       promptsByAssistant[prompt.assistant] = prompt.prompt;
     }
-    
+
     // Identify missing assistants
     const assistants = this.assistantRegistry.getAssistants();
     const missingAssistants = assistants.filter(
       assistant => !promptsByAssistant[assistant.name]
     );
-    
+
     // Generate prompts for missing assistants based on their role
     for (const assistant of missingAssistants) {
       this.logger.info(`Generating prompt for missing assistant: ${assistant.name}`);
-      
+
       // Use assistant description to generate a relevant prompt
       promptsByAssistant[assistant.name] = this.generatePromptTemplate(
-        assistant.name, 
+        assistant.name,
         assistant.description,
         projectState
       );
     }
-    
+
     return promptsByAssistant;
   }
 
@@ -76,7 +76,7 @@ export class AssistantPromptExtractor implements AssistantPromptExtractorInterfa
    * Generate a prompt template based on assistant role
    */
   private generatePromptTemplate(
-    assistantName: string, 
+    assistantName: string,
     description: string,
     projectState: string
   ): string {
@@ -103,22 +103,37 @@ Current focus areas would be extracted from project state analysis.
   }
 
   /**
+   * Extract prompts from template files
+   */
+  public extractPromptsFromTemplates(templatesDir: string): ExtractedPrompt[] {
+    return this.promptExtractor.extractPromptsFromTemplates(templatesDir);
+  }
+
+  /**
    * Run the full extraction and generation process
    */
-  public run(conversationPath: string, outputDir: string): void {
+  public run(conversationPath: string, outputDir: string, templatesDir?: string): void {
     this.logger.info(`Extracting prompts from ${conversationPath}`);
-    
-    // Extract existing prompts
+
+    // Extract existing prompts from conversation
     const extractedPrompts = this.extractPromptsFromConversation(conversationPath);
-    this.logger.info(`Found ${extractedPrompts.length} existing prompts`);
-    
+    this.logger.info(`Found ${extractedPrompts.length} existing prompts in conversation`);
+
+    // Extract prompts from templates if specified
+    let allExtractedPrompts = [...extractedPrompts];
+    if (templatesDir) {
+      const templatePrompts = this.extractPromptsFromTemplates(templatesDir);
+      this.logger.info(`Found ${templatePrompts.length} prompts in template files`);
+      allExtractedPrompts = [...allExtractedPrompts, ...templatePrompts];
+    }
+
     // Get project state
     const projectState = this.projectAnalyzer.getProjectState();
-    
+
     // Generate missing prompts
-    const allPrompts = this.generateMissingPrompts(extractedPrompts, projectState);
+    const allPrompts = this.generateMissingPrompts(allExtractedPrompts, projectState);
     this.logger.info(`Generated prompts for ${Object.keys(allPrompts).length} assistants`);
-    
+
     // Save prompts
     this.savePrompts(allPrompts, outputDir);
     this.logger.info('Assistant prompt extraction complete');

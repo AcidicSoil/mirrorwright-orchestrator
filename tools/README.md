@@ -43,6 +43,38 @@ python tools/memory_maintenance.py --tags
 python tools/memory_maintenance.py --report
 ```
 
+## Conversation and Prompt Tools
+
+### recreate-conversation.js
+
+A tool for creating new conversation templates based on the Strategic AI Prompt Template.
+
+```bash
+# Create a new conversation template
+node tools/recreate-conversation.js path/to/new-conversation.md
+```
+
+This tool:
+
+1. Copies the Strategic AI conversation template
+2. Prompts you for the task context
+3. Creates a new file with the template and your task context
+4. Prepares it for use with any AI assistant (Cursor agents or ChatGPT)
+
+### extractAssistantPrompts.js
+
+A tool for extracting assistant prompts from conversation logs.
+
+```bash
+# Extract prompts from a conversation log
+node tools/extractAssistantPrompts.js [conversationPath] [outputDir]
+```
+
+Where:
+
+- `conversationPath` is the path to the conversation log file (default: `extractAssistantPrompts.md`)
+- `outputDir` is the directory to save the extracted prompts (default: `assistant-prompts`)
+
 ## Other Tools
 
 ### llm_api.py
