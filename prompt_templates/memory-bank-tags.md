@@ -1,3 +1,10 @@
+---
+agent: cline
+purpose: documentation
+id: memory-bank-tag-schema
+version: 1.0.0
+---
+
 # Memory Bank Tag Schema for Assistant Prompts
 
 ```bash

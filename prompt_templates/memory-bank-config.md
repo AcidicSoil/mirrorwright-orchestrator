@@ -1,3 +1,10 @@
+---
+agent: cline
+purpose: documentation
+id: memory-bank-configuration
+version: 1.0.0
+---
+
 # Memory Bank Configuration for Mirrorwright Orchestrator
 
 This document outlines the configuration for the Cline memory bank integration with the Mirrorwright Orchestrator project.
@@ -6,7 +13,7 @@ This document outlines the configuration for the Cline memory bank integration w
 
 The memory bank is organized as follows:
 
-```
+```text
 cursor-memory-bank/
 ├── memory_index.json       # Index of all memories
 ├── memory-bank/            # Directory containing memory files

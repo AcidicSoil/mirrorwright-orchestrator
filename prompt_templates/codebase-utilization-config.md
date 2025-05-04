@@ -1,3 +1,10 @@
+---
+agent: augment
+purpose: documentation
+id: codebase-utilization-config
+version: 1.0.0
+---
+
 # Codebase Utilization Configuration
 
 This document outlines the configuration for codebase utilization in the Mirrorwright Orchestrator project.
@@ -8,7 +15,7 @@ The Mirrorwright Orchestrator codebase is organized to support protocol-driven m
 
 ## Directory Structure
 
-```
+```text
 mirrorwright-orchestrator/
 ├── docs/                        # High-level design docs, diagrams
 ├── protocols/                   # User-defined protocol files (YAML/JSON/MD)

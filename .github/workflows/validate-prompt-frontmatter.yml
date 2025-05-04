@@ -1,0 +1,65 @@
+name: Validate Prompt Frontmatter
+
+on:
+  pull_request:
+    paths:
+      - 'prompt_templates/**/*.md'
+  push:
+    branches: [main]
+    paths:
+      - 'prompt_templates/**/*.md'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate prompt frontmatter
+        run: node src/tools/check-frontmatter.js
+
+      - name: Comment on PR with validation results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('validation-results.json')) {
+              const results = JSON.parse(fs.readFileSync('validation-results.json', 'utf8'));
+
+              let comment = '## Prompt Frontmatter Validation Results\n\n';
+
+              if (results.invalid.length > 0) {
+                comment += '### ❌ Invalid Files\n\n';
+                for (const file of results.invalid) {
+                  comment += `- **${file.path}**: ${file.errors.join(', ')}\n`;
+                }
+                comment += '\n';
+              }
+
+              if (results.valid.length > 0) {
+                comment += '### ✅ Valid Files\n\n';
+                for (const file of results.valid) {
+                  comment += `- ${file}\n`;
+                }
+              }
+
+              comment += '\n\nSee [Prompt Frontmatter Standard](../blob/main/prompt_templates/prompt-frontmatter-standard.md) for more information.';
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }

@@ -1,6 +1,14 @@
+---
+agent: augment
+purpose: refactoring
+id: augment-refactor-prompt-extractor
+version: 1.0.0
+---
+
 # Prompt for Cursor Augment: Enhance Prompt Extractor
 
 Please refactor `src/tools/extractAssistantPrompts.ts` to:
+
 1. Modularize the following:
    - prompt extraction logic
    - file IO

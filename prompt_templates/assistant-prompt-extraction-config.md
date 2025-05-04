@@ -1,3 +1,10 @@
+---
+agent: promptrouter
+purpose: documentation
+id: assistant-prompt-extraction-config
+version: 1.0.0
+---
+
 # Assistant Prompt Extraction Configuration
 
 This document outlines the configuration for the assistant prompt extraction process in the Mirrorwright Orchestrator project.
@@ -18,7 +25,7 @@ The assistant prompt extraction process automatically extracts prompts from conv
 
 ### Directory Structure
 
-```
+```text
 mirrorwright-orchestrator/
 ├── prompt_templates/                # Template definitions
 │   ├── gpt-4o-prompt-extractor.md   # GPT-4o specific template
@@ -44,6 +51,7 @@ node tools/extractAssistantPrompts.js <input_file> <output_directory>
 ```
 
 Where:
+
 - `<input_file>` is the path to the conversation log file
 - `<output_directory>` is the directory where the generated prompts will be saved
 
