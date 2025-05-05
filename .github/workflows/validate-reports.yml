@@ -1,0 +1,37 @@
+name: Validate Augment Reports
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'reports/augment/**/*.report.yaml'
+      - 'src/schemas/report.schema.yaml'
+      - 'tools/validate-reports.js'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'reports/augment/**/*.report.yaml'
+      - 'src/schemas/report.schema.yaml'
+      - 'tools/validate-reports.js'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run test fixtures validation
+      run: node tools/validate-reports.js test
+    
+    - name: Validate production reports
+      run: node tools/validate-reports.js valid

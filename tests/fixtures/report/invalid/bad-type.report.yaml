@@ -1,0 +1,6 @@
+# tests/fixtures/report/invalid/bad-type.report.yaml
+
+type: review
+file: protocols/example.yaml
+findings: "This should be an array, not a string"
+recommendations: []

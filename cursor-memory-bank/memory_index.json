@@ -55,6 +55,43 @@
       ],
       "created": "2025-05-04T16:24:39.508597",
       "file_path": "cursor-memory-bank\\cline-memory-bank-future-improvements-2025-05-04.md"
+    },
+    {
+      "id": "mirrorwright-code-cleanup-proposal-2025-05-05",
+      "title": "Mirrorwright Code Cleanup Proposal",
+      "tags": [
+        "refactoring",
+        "architecture",
+        "validation",
+        "cleanup"
+      ],
+      "created": "2025-05-05T06:51:34.993574",
+      "file_path": "cursor-memory-bank\\mirrorwright-code-cleanup-proposal-2025-05-05.md"
+    },
+    {
+      "id": "lm-studio-mcp-configuration-2025-05-05",
+      "title": "LM Studio MCP Configuration",
+      "tags": [
+        "lmstudio",
+        "mcp",
+        "offline",
+        "tool-calling",
+        "structured-output"
+      ],
+      "created": "2025-05-05T07:44:16.888398",
+      "file_path": "cursor-memory-bank\\lm-studio-mcp-configuration-2025-05-05.md"
+    },
+    {
+      "id": "augment-report-schema-validation-system-2025-05-05",
+      "title": "Augment Report Schema + Validation System",
+      "tags": [
+        "schema",
+        "augment",
+        "report",
+        "validation"
+      ],
+      "created": "2025-05-05T10:35:55.051373",
+      "file_path": "cursor-memory-bank\\augment-report-schema-validation-system-2025-05-05.md"
     }
   ]
 }

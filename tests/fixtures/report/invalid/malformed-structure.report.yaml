@@ -1,0 +1,8 @@
+# tests/fixtures/report/invalid/malformed-structure.report.yaml
+
+type: review
+file: protocols/example.yaml
+findings:
+  - id: broken_path
+    message: "Missing severity field"  # required field omitted
+recommendations: []

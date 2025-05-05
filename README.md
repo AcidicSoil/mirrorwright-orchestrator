@@ -12,6 +12,7 @@ Mirrorwright Orchestrator is a robust, flexible framework designed to implement 
 - **Mode & Ritual Engine**: Load mode definitions, parse ritual steps, and manage active state/context
 - **Execution Engine**: Orchestrate agent interactions, execute commands, and manage context between steps
 - **Schema Validation**: Ensure protocol definitions adhere to specified schemas with optimized AJV implementation
+- **Report Schema**: Standardized format for Augment's output reports with cross-agent coordination
 - **Runtime Container**: Manage agent lifecycle, registration, and message routing between agents
   - **Advanced Message Routing**: Support for broadcast messages, message filtering, and capability-based routing
   - **Message Validation**: Schema-based validation of messages to ensure protocol compliance
@@ -105,6 +106,9 @@ pnpm test
 
 # Validate schemas
 pnpm validate:all
+
+# Validate Augment reports
+pnpm validate:reports
 
 # Extract assistant prompts
 node src/tools/extractAssistantPrompts.js extractAssistantPrompts.md assistant-prompts
@@ -205,6 +209,27 @@ The engine system features:
 - Context management between steps
 - Validation integration
 
+### Report Schema System
+
+The Mirrorwright Orchestrator includes a report schema system for standardizing Augment's output reports:
+
+```bash
+# Validate all reports
+pnpm validate:reports
+
+# Validate a specific report
+node tools/validate-reports.js valid reports/augment/example-protocol.report.yaml
+```
+
+The report schema system features:
+
+- **Standardized Format**: Consistent structure for Augment's output reports
+- **Cross-Agent Coordination**: Tags for handoffs between agents (`#handoff→Cline`, `#handoff→Roo`)
+- **Memory Integration**: `vibe_learn` hooks for updating the memory system
+- **CI/CD Integration**: Automatic validation in the CI pipeline
+
+For more information, see [Report Schema Documentation](docs/report-schema.md).
+
 ### Memory Bank System
 
 The Mirrorwright Orchestrator includes a memory bank system for maintaining context across development sessions:
@@ -237,7 +262,7 @@ The Mirrorwright Orchestrator uses a multi-agent approach for development:
 - **Cursor Roo**: Autonomous code-generation and CLI tooling specialist
 - **ChatGPT**: Strategy and meta-thinking partner for high-level guidance
 
-For detailed guidelines on using the Augment agent, see [Augment Agent Guidelines](docs/augment-agent-guidelines.md).
+For detailed guidelines on using the Augment agent, see [Augment Agent Guidelines](docs/augment-agent-guidelines.md) and [Augment Report Integration](docs/augment-report-integration.md).
 
 For strategic AI conversation templates, see [Strategic AI Conversation Template](prompt_templates/mirrorwright-strategic-ai-conversation-template.md).
 

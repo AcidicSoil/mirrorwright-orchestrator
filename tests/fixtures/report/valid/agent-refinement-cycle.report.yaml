@@ -1,0 +1,37 @@
+# tests/fixtures/valid/report/agent-refinement-cycle.report.yaml
+
+type: review
+file: protocols/agent-refinement-cycle.yaml
+summary: Augment reviewed the agent refinement protocol and suggested fallback handling and fragment reuse.
+
+findings:
+  - id: missing_onFailure_handler
+    severity: warning
+    message: "Step 'refine_prompt' is missing an onFailure fallback."
+    path: "/ritual/steps/1/onFailure"
+    tag: "#optimize-ritual"
+
+  - id: redundant_metadata
+    severity: info
+    message: "Consider reusing common vibe_learn fragment instead of inline metadata."
+    path: "/ritual/steps/1/metadata"
+    tag: "#refactor-modular"
+
+recommendations:
+  - action: "Add 'onFailure' fallback to 'refine_prompt'"
+    new_field:
+      onFailure: "trigger_vibecheck"
+    tags: ["#handoff→Cline", "#review-needed"]
+
+  - action: "Use shared fragment for vibe_learn"
+    insert_fragment: "fragments/common-vibe-learn.yaml"
+    tags: ["#refactor-modular"]
+
+metadata:
+  author: augment
+  created: 2025-05-05T13:55:00Z
+  vibe_learn:
+    tags: ["#optimize-ritual", "#review-needed"]
+    description: "Prompt refinement protocol improved with fallback logic and modular metadata."
+    source: protocols/agent-refinement-cycle.yaml
+    link: reports/augment/agent-refinement-cycle.report.yaml

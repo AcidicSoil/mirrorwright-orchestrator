@@ -1,0 +1,5 @@
+# tests/fixtures/report/invalid/missing-fields.report.yaml
+
+type: review
+file: protocols/example.yaml
+# missing 'findings' and 'recommendations'

@@ -1,0 +1,37 @@
+# reports/augment/example-protocol.report.yaml
+
+type: review
+file: protocols/example-protocol.yaml
+summary: Augment reviewed the example protocol and found potential improvements.
+
+findings:
+  - id: missing_fallback_handler
+    severity: warning
+    message: "Protocol is missing fallback handlers for error cases."
+    path: "/modes/0/exitRitual"
+    tag: "#optimize-ritual"
+
+  - id: redundant_configuration
+    severity: info
+    message: "Consider extracting common configuration into a shared fragment."
+    path: "/modes/0/config"
+    tag: "#refactor-modular"
+
+recommendations:
+  - action: "Add fallback handlers for error cases"
+    new_field:
+      exitRitual: "handle_error"
+    tags: ["#handoff→Cline", "#review-needed"]
+
+  - action: "Extract common configuration"
+    insert_fragment: "fragments/common-config.yaml"
+    tags: ["#refactor-modular"]
+
+metadata:
+  author: augment
+  created: 2025-05-05T14:30:00Z
+  vibe_learn:
+    tags: ["#optimize-ritual", "#review-needed"]
+    description: "Example protocol improved with fallback handlers and modular configuration."
+    source: protocols/example-protocol.yaml
+    link: reports/augment/example-protocol.report.yaml

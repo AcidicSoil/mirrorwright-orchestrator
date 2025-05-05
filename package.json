@@ -14,7 +14,10 @@
     "validate:mode": "ts-node src/cli/validate.ts --type mode",
     "validate:protocol": "ts-node src/cli/validate.ts --type protocol",
     "validate:all": "ts-node src/cli/validate.ts --type all",
-    "validate:legacy": "ts-node tools/validateProtocol.ts"
+    "validate:legacy": "ts-node tools/validateProtocol.ts",
+    "validate:reports": "node tools/validate-reports.js test",
+    "validate:reports:valid": "node tools/validate-reports.js valid",
+    "validate:reports:invalid": "node tools/validate-reports.js invalid"
   },
   "dependencies": {
     "@types/chai": "^5.2.1",
@@ -26,6 +29,7 @@
     "ajv-keywords": "^5.1.0",
     "chai": "^5.2.0",
     "chalk": "^4.1.2",
+    "glob": "^10.3.10",
     "js-yaml": "^4.1.0",
     "pino": "^8.16.0",
     "pino-pretty": "^13.0.0",
