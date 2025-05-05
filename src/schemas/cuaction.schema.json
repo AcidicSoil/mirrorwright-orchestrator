@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mirrorwright.dev/schemas/cuaction.schema.json",
+  "title": "Computer Use Agent Action Schema",
+  "description": "Schema for Computer Use Agent (CUA) action requests and responses",
+  "definitions": {
+    "CUActionRequest": {
+      "type": "object",
+      "properties": {
+        "action_type": {
+          "type": "string",
+          "enum": ["open_file", "write_file", "run_command", "browse_web"],
+          "description": "Type of action to perform"
+        },
+        "payload": {
+          "type": "object",
+          "description": "Structured payload for the action",
+          "oneOf": [
+            { "$ref": "#/definitions/OpenFilePayload" },
+            { "$ref": "#/definitions/WriteFilePayload" },
+            { "$ref": "#/definitions/RunCommandPayload" },
+            { "$ref": "#/definitions/BrowseWebPayload" }
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "description": "Current mode context"
+            },
+            "agent_id": {
+              "type": "string",
+              "description": "ID of the agent making the request"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp of the request"
+            }
+          },
+          "required": ["agent_id", "timestamp"],
+          "additionalProperties": true
+        },
+        "dry_run": {
+          "type": "boolean",
+          "description": "If true, validate but don't execute the action",
+          "default": false
+        }
+      },
+      "required": ["action_type", "payload"],
+      "additionalProperties": false
+    },
+    "OpenFilePayload": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file to open"
+        }
+      },
+      "required": ["path"],
+      "additionalProperties": false
+    },
+    "WriteFilePayload": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the file to write"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+        },
+        "append": {
+          "type": "boolean",
+          "description": "If true, append to the file instead of overwriting",
+          "default": false
+        }
+      },
+      "required": ["path", "content"],
+      "additionalProperties": false
+    },
+    "RunCommandPayload": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Command to run"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Arguments for the command"
+        },
+        "cwd": {
+          "type": "string",
+          "description": "Working directory for the command"
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Timeout in milliseconds",
+          "default": 30000
+        }
+      },
+      "required": ["command"],
+      "additionalProperties": false
+    },
+    "BrowseWebPayload": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to browse"
+        }
+      },
+      "required": ["url"],
+      "additionalProperties": false
+    },
+    "CUActionResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "Command output or success message"
+            },
+            {
+              "type": "object",
+              "description": "Structured result data"
+            }
+          ],
+          "description": "Result of the action"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["success", "error"],
+          "description": "Status of the action"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "duration": {
+              "type": "number",
+              "description": "Duration of the action in milliseconds"
+            },
+            "retries": {
+              "type": "integer",
+              "description": "Number of retries attempted"
+            },
+            "environment": {
+              "type": "object",
+              "description": "Environment information",
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": ["result", "status"],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/definitions/CUActionRequest" },
+    { "$ref": "#/definitions/CUActionResponse" }
+  ]
+}

@@ -10,6 +10,28 @@ assistants:
   cursorscan: "Map all file changes, agent contributions, and prompt evolutions to traceable protocol lifecycle metadata."
   promptrouter: "Route user prompts to optimal model and protocol phase context based on task intent and current orchestration scope."
   strategicai: "Transform user intent into structured, phase-aware prompt blueprints aligned with protocol objectives."
+  cua: "Computer Use Agent for controlled file operations, command execution, and web browsing."
+
+# Agent Roles
+
+roles:
+  SCAFFOLD_AGENT_ROLE: "Create initial project structure and files"
+  OPTIMIZE_AGENT_ROLE: "Optimize and refactor existing code"
+  CUA_AGENT_ROLE: "Perform controlled computer use actions"
+
+# Agent Permissions
+
+permissions:
+  cline:
+    - SCAFFOLD_AGENT_ROLE
+    - CUA_AGENT_ROLE
+  augment:
+    - OPTIMIZE_AGENT_ROLE
+    - CUA_AGENT_ROLE
+  roo:
+    - SCAFFOLD_AGENT_ROLE
+    - OPTIMIZE_AGENT_ROLE
+    - CUA_AGENT_ROLE
 
 
 # Reference
