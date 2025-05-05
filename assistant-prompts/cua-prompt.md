@@ -1,6 +1,6 @@
-# Cursor promptrouter: Auto-generated Prompt
+# Cursor cua: Auto-generated Prompt
 
-Based on role: "Route user prompts to optimal model and protocol phase context based on task intent and current orchestration scope."
+Based on role: "Computer Use Agent for controlled file operations, command execution, and web browsing."
 
 This prompt would be generated based on:
 1. The assistant's role description

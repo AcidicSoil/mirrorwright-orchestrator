@@ -1,0 +1,1 @@
+## Objective: Integrate `AssistantRulesRegistry` into `extractAssistantPrompts.ts`

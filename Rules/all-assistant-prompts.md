@@ -1,9 +1,3 @@
-## objective
-
-## Objective: Integrate `AssistantRulesRegistry` into `extractAssistantPrompts.ts`
-
----
-
 ## cline
 
 # Cursor cline: Auto-generated Prompt

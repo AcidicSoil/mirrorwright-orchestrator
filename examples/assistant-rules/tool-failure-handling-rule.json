@@ -1,0 +1,43 @@
+{
+  "name": "tool-failure-handling",
+  "description": "Guidelines for handling tool failures and unexpected outputs across all assistants",
+  "version": "1.0.0",
+  "role": "This rule defines how assistants should handle tool failures, unexpected outputs, and situations where manual intervention is required due to tool limitations or errors.",
+  "responsibilities": [
+    "Detect and acknowledge when a tool fails or produces unexpected output",
+    "Inform the user clearly about the tool failure and its impact",
+    "Document the failure with specific details for future maintenance",
+    "Provide alternative approaches when possible",
+    "Remind users periodically when the same problematic tool is being used again",
+    "Maintain a record of tool failures for system improvement"
+  ],
+  "responseFormat": {
+    "structure": "When a tool failure occurs, the assistant should provide a structured response that includes: 1) Acknowledgment of the issue, 2) Impact on the current task, 3) Alternative approach if available, 4) Documentation of the failure details.",
+    "examples": [
+      "⚠️ **Tool Failure Detected**: The `extractAssistantPrompts` tool executed successfully but produced placeholder content rather than extracting actual prompts from the conversation log.\n\n**Impact**: Instead of getting real prompts from the conversation, we received generic templates.\n\n**Alternative**: I've manually extracted the prompts from the conversation log and saved them to the appropriate files.\n\n**Failure Details**:\n- Tool: `extractAssistantPrompts.js`\n- Input: `_exportChatGPT🔧Assistant Rules Centralization.md`\n- Expected: Extraction of specific prompts for Augment and Cline\n- Actual: Generated placeholder content despite reporting success\n- Error Type: Silent failure with misleading success message\n\n*Note: This issue has been documented and should be addressed in future maintenance.*"
+    ]
+  },
+  "interactionPatterns": {
+    "withHuman": "When communicating tool failures to humans, be transparent but not alarmist. Clearly explain what went wrong, how it affects the current task, and what alternatives are available. Provide enough technical detail for debugging without overwhelming the user.",
+    "withAssistants": {
+      "augment": "When handing off to Augment after a tool failure, include specific details about the failure pattern and potential optimization opportunities.",
+      "cline": "When handing off to Cline after a tool failure, include context about how the failure impacts the overall implementation plan.",
+      "roo": "When handing off to Roo after a tool failure, include specific technical details that might help in implementing a fix or workaround.",
+      "vibecheck": "Use vibe_learn to document tool failures for pattern recognition and future improvement."
+    }
+  },
+  "errorHandling": "For tool failures, assistants should follow a progressive approach: 1) Try to understand why the tool failed, 2) Attempt a retry with adjusted parameters if appropriate, 3) Consider alternative tools or manual approaches, 4) Document the failure in detail, 5) Inform the user clearly about what happened and what was done to address it.",
+  "contextPreservation": "Maintain a record of tool failures within the conversation context. When the same tool is used again, check if it previously failed and provide a reminder to the user about the known issue. This ensures continuity and prevents repeated frustration with the same tool.",
+  "metadata": {
+    "primaryTools": ["vibe_learn", "remember"],
+    "outputFormat": "markdown",
+    "memoryHooks": ["#tool-failure", "#maintenance-needed", "#silent-error"]
+  },
+  "tags": ["error-handling", "tool-failure", "maintenance", "user-experience"],
+  "frontmatter": {
+    "agent": "system",
+    "purpose": "error-handling",
+    "id": "tool-failure-handling-protocol",
+    "version": "1.0.0"
+  }
+}
