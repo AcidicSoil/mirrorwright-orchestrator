@@ -4,7 +4,8 @@
 export enum AgentType {
   cline = "cline",
   augment = "augment",
-  roo = "roo"
+  roo = "roo",
+  vibecheck = "vibecheck"
 }
 
 /**

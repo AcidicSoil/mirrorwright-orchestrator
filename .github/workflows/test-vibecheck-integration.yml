@@ -1,0 +1,84 @@
+name: Test VibeCheck Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/agents/VibeCheckAdapter.ts'
+      - 'src/services/VibeCheckService.ts'
+      - 'src/router/PromptRouter.ts'
+      - 'tests/integration/VibeCheckIntegration.test.ts'
+      - 'docs/strategic-ai-reference/assistants/vibe-check/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/agents/VibeCheckAdapter.ts'
+      - 'src/services/VibeCheckService.ts'
+      - 'src/router/PromptRouter.ts'
+      - 'tests/integration/VibeCheckIntegration.test.ts'
+      - 'docs/strategic-ai-reference/assistants/vibe-check/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Validate VibeCheck rules
+      run: |
+        node src/tools/validate-assistant-rules.js docs/strategic-ai-reference/assistants/vibe-check/vibe-check.rules.yaml
+    
+    - name: Validate VibeCheck routing
+      run: |
+        node src/tools/validate-routing-config.js docs/strategic-ai-reference/assistants/vibe-check/vibe-check-routing.json
+    
+    - name: Run VibeCheck tests
+      run: npm test -- --testPathPattern=VibeCheck
+    
+    - name: Run integration tests
+      run: npm test -- --testPathPattern=integration/VibeCheckIntegration
+    
+    - name: Comment on PR with test results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          if (fs.existsSync('test-results.json')) {
+            const results = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+            
+            let comment = '## VibeCheck Integration Test Results\n\n';
+            
+            if (results.failed.length > 0) {
+              comment += '### ❌ Failed Tests\n\n';
+              for (const test of results.failed) {
+                comment += `- **${test.name}**: ${test.message}\n`;
+              }
+              comment += '\n';
+            }
+            
+            if (results.passed.length > 0) {
+              comment += '### ✅ Passed Tests\n\n';
+              for (const test of results.passed) {
+                comment += `- ${test.name}\n`;
+              }
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }

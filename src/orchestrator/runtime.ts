@@ -1,4 +1,5 @@
 import { Logger } from '../utils/Logger';
+import { Router, createPromptRouter } from '../router/PromptRouter';
 
 /**
  * Interface representing an agent in the Mirrorwright Orchestrator
@@ -53,19 +54,31 @@ export interface Message {
   from: string;
 
   /** Identifier of the receiving agent */
-  to: string;
+  to?: string;
 
   /** Message type */
   type: string;
 
-  /** Message payload */
-  payload: Record<string, any>;
+  /** Message content (string or other primitive type) */
+  content?: string | number | boolean;
+
+  /** Message payload (complex object) */
+  payload?: Record<string, any>;
 
   /** Message metadata */
   metadata?: Record<string, any>;
 
   /** Timestamp when the message was created */
-  timestamp: number;
+  timestamp?: number;
+
+  /** Phase for VibeCheck messages */
+  phase?: 'planning' | 'implementation' | 'review';
+
+  /** User request for VibeCheck messages */
+  userRequest?: string;
+
+  /** Plan for VibeCheck messages */
+  plan?: string;
 }
 
 /**
@@ -261,6 +274,7 @@ export class SimpleMessageBus implements MessageBus {
 export class DefaultRuntimeContainer implements RuntimeContainer {
   registry: AgentRegistry;
   messageBus: MessageBus;
+  private router: Router;
   private logger: Logger;
   private initialized: boolean = false;
   private running: boolean = false;
@@ -268,6 +282,7 @@ export class DefaultRuntimeContainer implements RuntimeContainer {
   constructor() {
     this.registry = new DefaultAgentRegistry();
     this.messageBus = new SimpleMessageBus();
+    this.router = createPromptRouter();
     this.logger = new Logger();
   }
 
@@ -405,6 +420,12 @@ export class DefaultRuntimeContainer implements RuntimeContainer {
     if (!sender) {
       this.logger.error(`Cannot send message: sender ${message.from} not registered`);
       throw new Error(`Sender ${message.from} not registered`);
+    }
+
+    // If no recipient is specified, use the router to determine the recipient
+    if (!message.to) {
+      message.to = this.router.routeMessage(message);
+      this.logger.info(`Router determined recipient: ${message.to}`);
     }
 
     // Validate that the recipient is registered
