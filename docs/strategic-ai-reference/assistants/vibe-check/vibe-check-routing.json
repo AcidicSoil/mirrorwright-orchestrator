@@ -1,0 +1,20 @@
+{
+  "id": "vibe-check-routing",
+  "agent": "PromptRouter",
+  "triggers": [
+    {
+      "type": "pattern",
+      "keywords": ["stuck", "loop", "repeating", "what now", "idk", "too complex"],
+      "agent_scope": ["cline", "augment", "chatgpt"]
+    },
+    {
+      "type": "tag",
+      "tags": ["#tunnel-vision", "#overload", "#fail-loop"]
+    }
+  ],
+  "route_to": "vibe-check",
+  "fallback_behavior": {
+    "onFailure": "chatgpt",
+    "response": "Simulating `vibe_distill` locally. Suggesting simplified framing."
+  }
+}

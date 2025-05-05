@@ -1,0 +1,63 @@
+---
+agent: vibe-check
+id: vibe-check.rules
+version: 1.0.0
+
+# 🧠 Mirrorwright Orchestrator — Assistant Rule File for VibeCheck Integration
+
+description: >
+  Defines invocation conditions, response roles, and fallback behavior for the
+  VibeCheck metacognitive tools (`vibe_check`, `vibe_distill`, `vibe_learn`) within
+  the multi-agent Mirrorwright Orchestrator system.
+
+role: metacognitive-intervention
+category: strategic-ai
+integration_target: mirrorwright-orchestrator
+
+invocation:
+  trigger_conditions:
+    - agent_output_contains: ["looping", "stuck", "repeating", "unclear"]
+    - context_tag: ["#overload", "#tunnel-vision", "#complexity", "#error-loop"]
+    - agent_type_in: ["chatgpt", "cline", "augment"]
+    - promptrouter_hint: ["invoke: vibe-check"]
+  frequency: adaptive
+  fallback_behavior: >
+    If VibeCheck cannot be reached or invoked, the host agent should trigger an internal
+    prompt to pause and offer a simple clarification step or suggest requesting human guidance.
+
+tools:
+  - name: vibe_check
+    purpose: Interrupt stuck reasoning or looping agent behavior.
+    usage: >
+      When an agent appears to be stuck, verbose, or circling an issue without resolution,
+      `vibe_check` can offer a pattern-interruptive insight, reframe, or constraint reduction.
+
+  - name: vibe_distill
+    purpose: Simplify overwhelming or overly complex chains of reasoning.
+    usage: >
+      Use `vibe_distill` when a user or agent flags a prompt as "too much," "confusing," or
+      contains dense logic that may benefit from clarity or breakdown.
+
+  - name: vibe_learn
+    purpose: Capture resolution paths and agent recovery behavior for reflection or reuse.
+    usage: >
+      `vibe_learn` is called automatically at the end of a successful metacognitive recovery.
+      It may store summaries, failures, or clarified insights for strategic learning.
+
+memory:
+  tagging:
+    - auto_tag: ["#vibe-check", "#pattern-interrupt", "#clarity-boost"]
+    - log_tool_invocations: true
+    - enable_traceback_capture: true
+
+routing:
+  eligible_agents: ["chatgpt", "cline", "augment"]
+  route_via: promptrouter
+  fallback_agent: chatgpt
+  notes: >
+    When routing fails or fallback logic triggers, ChatGPT will simulate a minimal `vibe_distill`
+    behavior using context summarization heuristics.
+
+---
+
+#handoff→Augment #handoff→PromptRouter #handoff→Cline
