@@ -10,6 +10,10 @@
     {
       "type": "tag",
       "tags": ["#tunnel-vision", "#overload", "#fail-loop"]
+    },
+    {
+      "type": "message_type",
+      "messageTypes": ["vibe_check", "vibe_distill", "vibe_learn"]
     }
   ],
   "route_to": "vibe-check",

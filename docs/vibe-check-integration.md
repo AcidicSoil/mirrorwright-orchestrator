@@ -18,6 +18,7 @@ The VibeCheck integration follows a modular approach with the following componen
 - **VibeCheckService**: Service that provides the VibeCheck functionality with caching and error handling
 - **VibeCheckAdapter**: Adapter that implements the AgentAdapter interface with session management
 - **PromptRouter**: Router that routes messages to VibeCheck based on triggers
+- **PromptRouterService**: Service that provides methods for programmatically triggering VibeCheck
 - **Runtime Container**: Container that manages the lifecycle of the VibeCheck agent
 
 ### Component Diagram
@@ -35,9 +36,14 @@ The VibeCheck integration follows a modular approach with the following componen
          │                     │
          ▼                     ▼
 ┌─────────────────┐    ┌─────────────────┐
-│ VibeCheckAdapter│    │  Other Agent    │
-└─────────────────┘    │    Adapters     │
-         │             └─────────────────┘
+│ PromptRouter    │    │  Other Agent    │
+│ Service         │    │    Adapters     │
+└─────────────────┘    └─────────────────┘
+         │                     │
+         ▼                     ▼
+┌─────────────────┐    ┌─────────────────┐
+│ VibeCheckAdapter│    │  Other Services │
+└─────────────────┘    └─────────────────┘
          │
          ▼
 ┌─────────────────┐
@@ -230,6 +236,58 @@ await container.sendMessage({
 });
 ```
 
+### Using the PromptRouterService
+
+The PromptRouterService provides methods for programmatically triggering VibeCheck:
+
+```typescript
+import { createPromptRouterService } from '../services/PromptRouterService';
+
+// Create the PromptRouterService
+const promptRouterService = createPromptRouterService();
+
+// Check if a message should be routed to VibeCheck
+const message = {
+  id: uuidv4(),
+  type: 'text',
+  from: 'example',
+  content: 'I am stuck and need help'
+};
+const shouldRoute = promptRouterService.shouldRouteToVibeCheck(message);
+
+// Trigger VibeCheck with a message
+const vibeCheckMessage = promptRouterService.triggerVibeCheck(message, 'example');
+await container.sendMessage(vibeCheckMessage);
+
+// Trigger VibeCheck with a plan
+const vibeCheckWithPlanMessage = promptRouterService.triggerVibeCheckWithPlan(
+  'First, I will set up a React application with Redux...',
+  'Create a simple todo app',
+  'planning',
+  'example'
+);
+await container.sendMessage(vibeCheckWithPlanMessage);
+
+// Trigger VibeDistill with a plan
+const vibeDistillMessage = promptRouterService.triggerVibeDistill(
+  'First, I will set up a React application with Redux...',
+  'Create a simple todo app',
+  'example'
+);
+await container.sendMessage(vibeDistillMessage);
+
+// Trigger VibeLearn with a mistake
+const vibeLearnMessage = promptRouterService.triggerVibeLearn(
+  'Added too many features at once',
+  'Feature Creep',
+  'Focus on core functionality first',
+  'example'
+);
+await container.sendMessage(vibeLearnMessage);
+```
+
+For more information about the PromptRouter integration with VibeCheck, see the [PromptRouter VibeCheck Integration](./promptrouter-vibecheck-integration.md) documentation.
+
 ### Advanced Features
 
 The VibeCheck integration includes several advanced features:
@@ -351,6 +409,10 @@ The VibeCheck routing configuration is defined in `docs/strategic-ai-reference/a
     {
       "type": "tag",
       "tags": ["#tunnel-vision", "#overload", "#fail-loop"]
+    },
+    {
+      "type": "message_type",
+      "messageTypes": ["vibe_check", "vibe_distill", "vibe_learn"]
     }
   ],
   "route_to": "vibe-check",
@@ -395,9 +457,10 @@ The VibeCheck integration includes comprehensive tests:
   - `VibeCheckService.test.ts`: Tests for the service that provides caching and error handling
   - `VibeCheckAdapter.test.ts`: Tests for the adapter that implements the AgentAdapter interface
   - `VibeCheckUtils.test.ts`: Tests for the helper functions for using VibeCheck tools
+  - `PromptRouterService.test.ts`: Tests for the service that provides methods for programmatically triggering VibeCheck
 
 - **Integration Tests**:
-  - `VibeCheckIntegration.test.ts`: Tests for the integration with the runtime container and PromptRouter
+  - `VibeCheckIntegration.test.ts`: Tests for the integration with the runtime container, PromptRouter, and PromptRouterService
 
 To run the tests:
 
@@ -453,3 +516,6 @@ Logger.setLevel('debug');
 - **Offline Mode**: Add support for offline operation when the server is not available
 - **Streaming Responses**: Add support for streaming responses for long-running operations
 - **Multi-Agent Collaboration**: Enhance integration with other agents for collaborative problem-solving
+- **Enhanced PromptRouter Integration**: Add support for more trigger types and routing strategies
+- **Automated Triggering**: Implement automatic triggering of VibeCheck based on agent behavior patterns
+- **Feedback Loop**: Implement a feedback loop to improve routing decisions based on outcomes

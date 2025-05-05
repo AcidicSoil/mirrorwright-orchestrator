@@ -1,8 +1,9 @@
 /**
  * PromptRouter
- * 
+ *
  * A router that routes messages to the appropriate agent based on routing configurations.
  * This implementation supports dynamic loading of routing configurations from files.
+ * It also provides special handling for VibeCheck-specific message types.
  */
 
 import { readFileSync } from 'fs';
@@ -47,6 +48,14 @@ export interface PatternTrigger extends RoutingTrigger {
 export interface TagTrigger extends RoutingTrigger {
   type: 'tag';
   tags: string[];
+}
+
+/**
+ * Interface for a message type trigger
+ */
+export interface MessageTypeTrigger extends RoutingTrigger {
+  type: 'message_type';
+  messageTypes: string[];
 }
 
 /**
@@ -129,11 +138,22 @@ export class PromptRouter implements Router {
     }
 
     // Check if any of the message tags match the trigger tags
-    const messageTags = Array.isArray(message.metadata.tags) 
-      ? message.metadata.tags 
+    const messageTags = Array.isArray(message.metadata.tags)
+      ? message.metadata.tags
       : [message.metadata.tags];
-    
+
     return tagTrigger.tags.some(tag => messageTags.includes(tag));
+  }
+
+  /**
+   * Determine if a message should be routed to a specific agent based on message type triggers
+   * @param message The message to check
+   * @param messageTypeTrigger The message type trigger to check against
+   * @returns Whether the message should be routed based on the message type trigger
+   */
+  private matchesMessageTypeTrigger(message: Message, messageTypeTrigger: MessageTypeTrigger): boolean {
+    // Check if the message type matches any of the trigger message types
+    return messageTypeTrigger.messageTypes.includes(message.type);
   }
 
   /**
@@ -143,6 +163,13 @@ export class PromptRouter implements Router {
    * @returns Whether the message should be routed based on the routing configuration
    */
   private shouldRouteToAgent(message: Message, routingConfig: RoutingConfig): boolean {
+    // Special handling for VibeCheck-specific message types
+    if (routingConfig.route_to === 'vibe-check' &&
+        (message.type === 'vibe_check' || message.type === 'vibe_distill' || message.type === 'vibe_learn')) {
+      this.logger.info(`Routing message ${message.id} to VibeCheck based on message type: ${message.type}`);
+      return true;
+    }
+
     // Check each trigger in the routing configuration
     for (const trigger of routingConfig.triggers) {
       switch (trigger.type) {
@@ -153,6 +180,11 @@ export class PromptRouter implements Router {
           break;
         case 'tag':
           if (this.matchesTagTrigger(message, trigger as TagTrigger)) {
+            return true;
+          }
+          break;
+        case 'message_type':
+          if (this.matchesMessageTypeTrigger(message, trigger as MessageTypeTrigger)) {
             return true;
           }
           break;

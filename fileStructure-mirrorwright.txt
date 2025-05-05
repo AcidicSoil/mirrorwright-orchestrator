@@ -17,7 +17,7 @@ mirrorwright-orchestrator/
 │   ├── agents/                     # Adapters for agent communication
 │   │   ├── LLManagerAdapter.ts
 │   │   └── OpenAIAdapter.ts
-│   ├── models/                     # TypeScript interfaces & types
+│   ├──  models/                     # TypeScript interfaces & types
 │   │   └── index.ts
 │   └── utils/                      # Common helpers & utilities
 │       ├── Logger.ts

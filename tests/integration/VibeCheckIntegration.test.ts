@@ -9,6 +9,7 @@ import { AgentConfig, AgentType } from '../../src/types/agent';
 import { v4 as uuidv4 } from 'uuid';
 import { VibeCheckAdapter } from '../../src/agents/VibeCheckAdapter';
 import { PromptRouter } from '../../src/router/PromptRouter';
+import { PromptRouterService, createPromptRouterService } from '../../src/services/PromptRouterService';
 
 // Mock the fs module to avoid file system dependencies
 vi.mock('fs', () => ({
@@ -64,10 +65,14 @@ describe('VibeCheck Integration', () => {
   let container;
   let vibeCheckAgent;
   let messageHandlerSpy;
+  let promptRouterService: PromptRouterService;
 
   beforeAll(async () => {
     // Create the runtime container
     container = createRuntimeContainer();
+
+    // Create the PromptRouterService
+    promptRouterService = createPromptRouterService();
 
     // Create the VibeCheck agent
     const vibeCheckConfig: AgentConfig = {
@@ -319,5 +324,91 @@ describe('VibeCheck Integration', () => {
 
     // Check that the message was handled by VibeCheck
     expect(messageHandlerSpy).toHaveBeenCalled();
+  });
+
+  it('should use the PromptRouterService to trigger VibeCheck', async () => {
+    // Create a message
+    const message: Message = {
+      id: uuidv4(),
+      type: 'text',
+      from: 'test',
+      content: 'I need help with my plan'
+    };
+
+    // Check if the message should be routed to VibeCheck
+    const shouldRoute = promptRouterService.shouldRouteToVibeCheck(message);
+    expect(shouldRoute).toBe(true);
+
+    // Trigger VibeCheck with the message
+    const vibeCheckMessage = promptRouterService.triggerVibeCheck(message, 'test');
+    await container.sendMessage(vibeCheckMessage);
+
+    // Check that the message was handled by VibeCheck
+    expect(messageHandlerSpy).toHaveBeenCalled();
+    const handledMessage = messageHandlerSpy.mock.calls[messageHandlerSpy.mock.calls.length - 1][0];
+    expect(handledMessage.type).toBe('vibe_check');
+    expect(handledMessage.from).toBe('test');
+    expect(handledMessage.to).toBe('vibecheck');
+  });
+
+  it('should use the PromptRouterService to trigger VibeCheck with a plan', async () => {
+    // Trigger VibeCheck with a plan
+    const vibeCheckMessage = promptRouterService.triggerVibeCheckWithPlan(
+      'First, I will set up a React application with Redux...',
+      'Create a simple todo app',
+      'planning',
+      'test'
+    );
+    await container.sendMessage(vibeCheckMessage);
+
+    // Check that the message was handled by VibeCheck
+    expect(messageHandlerSpy).toHaveBeenCalled();
+    const handledMessage = messageHandlerSpy.mock.calls[messageHandlerSpy.mock.calls.length - 1][0];
+    expect(handledMessage.type).toBe('vibe_check');
+    expect(handledMessage.from).toBe('test');
+    expect(handledMessage.to).toBe('vibecheck');
+    expect(handledMessage.phase).toBe('planning');
+    expect(handledMessage.userRequest).toBe('Create a simple todo app');
+    expect(handledMessage.plan).toBe('First, I will set up a React application with Redux...');
+  });
+
+  it('should use the PromptRouterService to trigger VibeDistill', async () => {
+    // Trigger VibeDistill
+    const vibeDistillMessage = promptRouterService.triggerVibeDistill(
+      'First, I will set up a React application with Redux...',
+      'Create a simple todo app',
+      'test'
+    );
+    await container.sendMessage(vibeDistillMessage);
+
+    // Check that the message was handled by VibeCheck
+    expect(messageHandlerSpy).toHaveBeenCalled();
+    const handledMessage = messageHandlerSpy.mock.calls[messageHandlerSpy.mock.calls.length - 1][0];
+    expect(handledMessage.type).toBe('vibe_distill');
+    expect(handledMessage.from).toBe('test');
+    expect(handledMessage.to).toBe('vibecheck');
+    expect(handledMessage.userRequest).toBe('Create a simple todo app');
+    expect(handledMessage.plan).toBe('First, I will set up a React application with Redux...');
+  });
+
+  it('should use the PromptRouterService to trigger VibeLearn', async () => {
+    // Trigger VibeLearn
+    const vibeLearnMessage = promptRouterService.triggerVibeLearn(
+      'Added too many features at once',
+      'Feature Creep',
+      'Focus on core functionality first',
+      'test'
+    );
+    await container.sendMessage(vibeLearnMessage);
+
+    // Check that the message was handled by VibeCheck
+    expect(messageHandlerSpy).toHaveBeenCalled();
+    const handledMessage = messageHandlerSpy.mock.calls[messageHandlerSpy.mock.calls.length - 1][0];
+    expect(handledMessage.type).toBe('vibe_learn');
+    expect(handledMessage.from).toBe('test');
+    expect(handledMessage.to).toBe('vibecheck');
+    expect(handledMessage.mistake).toBe('Added too many features at once');
+    expect(handledMessage.category).toBe('Feature Creep');
+    expect(handledMessage.solution).toBe('Focus on core functionality first');
   });
 });
