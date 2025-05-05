@@ -1,0 +1,105 @@
+# src/schemas/assistant-rule.schema.yaml
+$id: "https://mirrorwright.dev/schemas/assistant-rule.schema.yaml"
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Assistant Rule"
+description: >
+  A structured definition of an assistant's rules and instructions,
+  including role, responsibilities, response format, and interaction patterns.
+
+type: object
+required:
+  - name
+  - description
+  - version
+  - role
+  - responsibilities
+  - responseFormat
+  - interactionPatterns
+  - errorHandling
+properties:
+  name:
+    type: string
+    description: The name of the assistant (e.g., "augment", "cline", "roo").
+
+  description:
+    type: string
+    description: A brief description of the assistant's purpose.
+
+  version:
+    type: string
+    description: The version of the assistant rule (e.g., "1.0.0").
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+
+  role:
+    type: string
+    description: A detailed description of the assistant's role in the system.
+
+  responsibilities:
+    type: array
+    items:
+      type: string
+    description: A list of the assistant's primary responsibilities.
+
+  responseFormat:
+    type: object
+    required:
+      - structure
+      - examples
+    properties:
+      structure:
+        type: string
+        description: Description of the expected response structure.
+      examples:
+        type: array
+        items:
+          type: string
+        description: Examples of properly formatted responses.
+
+  interactionPatterns:
+    type: object
+    required:
+      - withHuman
+      - withAssistants
+    properties:
+      withHuman:
+        type: string
+        description: How the assistant should interact with human users.
+      withAssistants:
+        type: object
+        additionalProperties:
+          type: string
+        description: How the assistant should interact with other assistants.
+
+  errorHandling:
+    type: string
+    description: Guidelines for how the assistant should handle errors.
+
+  contextPreservation:
+    type: string
+    description: Guidelines for how the assistant should preserve context.
+
+  metadata:
+    type: object
+    additionalProperties: true
+    description: Additional metadata about the assistant.
+
+  tags:
+    type: array
+    items:
+      type: string
+    description: Tags for categorizing the assistant.
+
+  frontmatter:
+    type: object
+    properties:
+      agent:
+        type: string
+      purpose:
+        type: string
+      id:
+        type: string
+      version:
+        type: string
+    description: YAML frontmatter for prompt templates.
+
+additionalProperties: false

@@ -17,7 +17,15 @@
     "validate:legacy": "ts-node tools/validateProtocol.ts",
     "validate:reports": "node tools/validate-reports.js test",
     "validate:reports:valid": "node tools/validate-reports.js valid",
-    "validate:reports:invalid": "node tools/validate-reports.js invalid"
+    "validate:reports:invalid": "node tools/validate-reports.js invalid",
+    "assistant-rules": "ts-node src/cli/assistant-rules.ts",
+    "assistant-rules:view": "ts-node src/cli/assistant-rules.ts view",
+    "assistant-rules:update": "ts-node src/cli/assistant-rules.ts update",
+    "assistant-rules:add": "ts-node src/cli/assistant-rules.ts add",
+    "assistant-rules:remove": "ts-node src/cli/assistant-rules.ts remove",
+    "assistant-rules:validate": "ts-node src/cli/assistant-rules.ts validate",
+    "assistant-rules:export": "ts-node src/cli/assistant-rules.ts export",
+    "assistant-rules:import": "ts-node src/cli/assistant-rules.ts import"
   },
   "dependencies": {
     "@types/chai": "^5.2.1",
