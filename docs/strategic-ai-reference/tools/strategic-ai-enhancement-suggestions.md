@@ -103,6 +103,42 @@ Strategic AI currently:
 - Better test coverage of critical paths
 - Reduced regression issues
 
+## Memory Storage Matrix
+
+The following table defines where different types of events and information should be stored across the Mirrorwright Orchestrator ecosystem. This matrix ensures consistent memory management and appropriate persistence based on the type of information.
+
+| Event/Information Type | mem0-memory | Cursor Memory Bank | Knowledge Graph | Project Files | Assistant Rules | VibeCheck Memory | Trigger Condition |
+|------------------------|:-----------:|:------------------:|:---------------:|:-------------:|:---------------:|:----------------:|-------------------|
+| **Project Milestones** | ✓ | ✓ | ✓ | ✓ (ROADMAP.md) | | | On completion of major feature |
+| **Architectural Decisions** | | ✓ | ✓ | ✓ (ADRs) | | | When Strategic AI approves decision |
+| **Agent Interactions** | | ✓ | ✓ | | | ✓ | After successful multi-agent workflow |
+| **Tool Failures** | ✓ | ✓ | | ✓ (failure logs) | ✓ | | On detection of tool failure |
+| **Schema Updates** | | ✓ | ✓ | ✓ (schema files) | | | On schema version increment |
+| **Assistant Rule Changes** | ✓ | ✓ | | | ✓ | | On rule update via Registry |
+| **Integration Points** | | ✓ | ✓ | ✓ (docs) | | | When new integration is implemented |
+| **User Preferences** | ✓ | ✓ | | | | ✓ | On explicit user instruction |
+| **Error Patterns** | | ✓ | ✓ | | | ✓ | After error resolution |
+| **Performance Metrics** | | ✓ | ✓ | ✓ (reports) | | | Daily/Weekly aggregation |
+| **Version Releases** | ✓ | ✓ | ✓ | ✓ (CHANGELOG.md) | | | On version tag creation |
+| **Prompt Templates** | | ✓ | | ✓ (prompt_templates/) | ✓ | | On template creation/update |
+| **Validation Results** | | ✓ | | ✓ (validation logs) | | ✓ | After validation run |
+
+### Implementation Guidelines
+
+1. **mem0-memory**: Use for user-specific preferences and critical project information that needs to persist across sessions
+2. **Cursor Memory Bank**: Primary storage for development context, decisions, and patterns
+3. **Knowledge Graph**: Used for relationship mapping between components, concepts, and decisions
+4. **Project Files**: Formal documentation in appropriate locations (markdown, code comments, etc.)
+5. **Assistant Rules**: Updates to assistant behavior and capabilities
+6. **VibeCheck Memory**: Metacognitive patterns, error prevention, and interaction improvements
+
+### Memory Lifecycle Management
+
+- **Short-term memory**: Stored in mem0-memory and active session context
+- **Medium-term memory**: Maintained in Cursor Memory Bank with appropriate tags
+- **Long-term memory**: Persisted in Knowledge Graph and Project Files
+- **Procedural memory**: Encoded in Assistant Rules and VibeCheck Memory
+
 ## Next Steps
 
 1. Implement the Strategic AI codebase audit template (`prompt_templates/strategic-ai-codebase-audit.md`)
@@ -110,6 +146,7 @@ Strategic AI currently:
 3. Create integration points between Strategic AI and AssistantRulesRegistry
 4. Establish the pattern library structure and documentation format
 5. Develop an ADR template and workflow
+6. Implement the Memory Storage Matrix with appropriate hooks and triggers
 
 ## Related Files
 
@@ -117,3 +154,4 @@ Strategic AI currently:
 - `src/assistant/AssistantRulesRegistry.ts`
 - `docs/strategic-ai-reference/index.md`
 - `docs/strategic-ai-reference/tools/`
+- `src/memory/MemoryManager.ts` (proposed)
