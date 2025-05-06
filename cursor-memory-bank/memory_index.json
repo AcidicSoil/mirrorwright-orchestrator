@@ -92,6 +92,19 @@
       ],
       "created": "2025-05-05T10:35:55.051373",
       "file_path": "cursor-memory-bank\\augment-report-schema-validation-system-2025-05-05.md"
+    },
+    {
+      "id": "lm-studio-mcp-configuration-2025-05-05",
+      "title": "LM Studio MCP Configuration",
+      "tags": [
+        "lmstudio",
+        "mcp",
+        "offline",
+        "tool-calling",
+        "structured-output"
+      ],
+      "created": "2025-05-05T18:53:55.488638",
+      "file_path": "cursor-memory-bank\\lm-studio-mcp-configuration-2025-05-05.md"
     }
   ]
 }
