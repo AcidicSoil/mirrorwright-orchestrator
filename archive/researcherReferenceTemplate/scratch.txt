@@ -1,0 +1,113 @@
+give me a good research question
+
+Your task is to write a one-paragraph search query as if you were telling a human researcher what to find, including all the relevant context. Format the paragraph as clear instructions commanding a researcher to find what we're looking for, ask for code snippets or technical details when relevant.
+
+### ChatGPT said:
+
+🤖 Understood: working alongside your Cursor system.
+
+---
+
+Here’s a **high-quality research question** written in the **one-paragraph researcher directive** style you asked for:
+
+---
+
+> Researcher Task:
+>
+>
+> Find the most recent academic and industry research (published between 2021 and 2025) on how speculative decoding methods impact inference speed and accuracy in large language models (LLMs), particularly for models running on non-NVIDIA (e.g., AMD, Intel Arc) consumer GPUs. Summarize findings related to speed improvements (measured in tokens per second), typical VRAM usage changes, and any known trade-offs in output quality. Include technical details on how speculative decoding is implemented (e.g., draft models, draft-token revalidation algorithms) and, if possible, provide open-source code examples or GitHub repositories demonstrating speculative decoding in Python environments that are compatible with Vulkan or ROCm backends. Prioritize sources that benchmark real-world performance impacts, not just theoretical papers.
+>
+
+---
+
+### 🎯 Why this is a good research question:
+
+- It’s **narrow** but **high-value**: targeted to speculative decoding + AMD GPUs (your setup).
+- It **commands action**: what time range, what type of data (benchmarks, code), and prioritizes applied findings.
+- It **allows code snippets**: so you could actually try speculative decoding if you wanted.
+- It **filters for practicality**: not just papers but working examples.
+
+---
+
+Would you like me to generate 2–3 **more variations** based on different types of research you might be curious about (e.g., model optimization, academic paper organization, agent design)?
+
+🎯 (Could build you a mini set of ready-to-go search prompts!)
+
+### You said:
+
+sure
+
+### ChatGPT said:
+
+🤖 Understood: working alongside your Cursor system.
+
+---
+
+Here’s a **small curated set** of **three more high-quality research directives**, each targeting a different research dimension —
+
+written in the same clear "command a researcher" format you asked for:
+
+---
+
+### 1. 🧠 Research Question – *Model Optimization Techniques for Research-Heavy Tasks*
+
+> Researcher Task:
+>
+>
+> Locate comprehensive technical studies and applied benchmarks (from 2020–2025) comparing optimization techniques for improving inference efficiency in large language models used for long-context research tasks. Focus especially on techniques like model quantization, attention pruning, low-rank adaptation (LoRA), speculative decoding, and batching strategies. Summarize their real-world impact on inference speed, VRAM utilization, and context retention quality for models in the 7B–13B parameter range. Where possible, include practical implementation details, open-source tools, and examples tuned for running on Vulkan, ROCm, or CPU-only environments.
+>
+
+---
+
+### 2. 📚 Research Question – *Efficient Document Ingestion and Chunking Strategies for LLMs*
+
+> Researcher Task:
+>
+>
+> Investigate recent methods (published or shared between 2022–2025) for efficiently preprocessing, chunking, and feeding large documents (academic papers, legal documents, technical manuals) into LLMs without losing semantic coherence. Focus on smart chunking strategies (e.g., semantic segmentation, recursive splitting, overlap optimization) that maximize retention of critical information across document sections when context windows are limited (e.g., 8K–16K tokens). Provide examples, toolkits, or code snippets that automate document chunking in Python, preferably compatible with LangChain, HuggingFace, or local pipelines.
+>
+
+---
+
+### 3. 🤖 Research Question – *Best Practices for Building Multi-Turn Research Agents*
+
+> Researcher Task:
+>
+>
+> Gather detailed research (2021–2025) on best practices for designing multi-turn, memory-augmented research agents powered by large language models. Focus on frameworks and architectural patterns that allow LLMs to retain and build upon research findings over multiple queries, including retrieval-augmented generation (RAG), memory buffers, session-based learning, and self-critique loops. Highlight real-world case studies where agents were tuned for academic research assistance, scientific summarization, or technical report drafting. Where possible, provide modular Python examples or repository links illustrating effective multi-turn memory integration.
+>
+
+---
+
+## 🧠 Why this set works:
+
+- Each one covers **a crucial building block** of scaling your research capabilities.
+- All are **actionable** — they guide a researcher to not just "find stuff" but **find usable, testable techniques**.
+- They **prioritize 2021–2025** to keep everything **state-of-the-art** and aligned with current LLM tech.
+- They ask for **real code examples** or **open-source tools** where applicable — not just theory.
+
+---
+
+✅ You could now **pick based on your research goal** or even **assign multiple simultaneously** if you want parallel acceleration!
+
+Would you like me to also package this into a **"Research Prompt Pack"** (ready-to-copy .txt or note file) if you're planning to run several inquiries together? 📦
+
+(Could save you time if you’re batch-feeding research agents!)
+
+### You said:
+
+sure
+
+### ChatGPT said:
+
+Research Prompt Pack
+
+✅ Your **Research Prompt Pack** is now ready!
+
+You can quickly copy from it whenever you want to run a focused research inquiry.
+
+Would you also like me to generate a **bonus "meta-research" prompt** —
+
+something like "find emerging best practices for building scalable research infrastructures powered by local LLMs"?
+
+(Kind of a next-level prompt if you're thinking long-term expansion!) 🚀

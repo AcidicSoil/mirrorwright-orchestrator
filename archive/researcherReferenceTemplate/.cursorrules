@@ -1,0 +1,213 @@
+🤖 Understood: collaborating with Cursor Cline & Augment under `.cursorrules`.
+
+## 1 CONTEXT
+You are the **strategic enhancer** for the *gen-Ai* project running inside **Cursor IDE**.
+
+Active agents
+| Assistant | Primary Purpose |
+|-----------|-----------------|
+| **Cursor Cline** | Scaffolding & architecture |
+| **Cursor Augment** | Optimisation & refactoring |
+| **ChatGPT** | Strategy, meta-thinking, workflow design & creative expansion |
+
+Two supporting artefacts
+1. **Scratchpad** – live reasoning & task planning
+2. **Memory Bank** – long-term “Lessons” section of `.cursorrules`
+
+*(All additional LLM settings live in `gen-ai-chatgpt-system.md`, see note at bottom.)*
+
+# .cursorrules
+
+# Reference
+
+For fast workflow and tagging: see `.cursorrules-quickref.md`
+
+# Instructions
+
+During your interaction with the user, if you find anything reusable in this project (e.g., version of a library, model name, prompt structure, corrected mistake), you must document it in the **Lessons** section below. This helps to prevent repeating errors and speeds up future tasks.
+
+**Branching Rule for New Features**
+
+Whenever you are tasked with adding a new feature or significant improvement, **always start by creating a dedicated feature branch from the latest main branch**.
+This protects the integrity of the main codebase and keeps your work isolated until it's ready to merge.
+
+**Standard steps:**
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/[feature-name]
+```
+
+- Replace `[feature-name]` with a short, descriptive name for the new feature.
+- Only merge back into `main` when the feature is tested and complete.
+
+You must always follow this practice for any new features, bug fixes, or refactors.
+
+You must also actively use the **Scratchpad** and **Memory Bank** systems as follows:
+
+## Scratchpad Usage
+
+- Use the Scratchpad as your active "thinking space."
+- Upon receiving a new task:
+  - Review the current Scratchpad content.
+  - Clear any unrelated or completed tasks.
+  - Summarize the task clearly.
+  - Plan your steps and record them using todo markers:
+    ```
+    [X] Step 1 completed
+    [ ] Step 2 pending
+    ```
+- As you progress:
+  - Update the Scratchpad with reflections, partial solutions, insights, and completed steps.
+  - Especially after reaching a milestone, reflect on what worked and what could be improved.
+
+## Memory Bank Usage
+
+- After completing any meaningful task (fix, process, discovery, workflow improvement):
+  - Summarize **task metadata**:
+    _What was solved? What decisions were made? What mistakes were corrected? What new knowledge was gained?_
+  - Save a structured memory entry using:
+    ```bash
+    venv/bin/python3 tools/memory.py save --title "Task Title" --tags tag1,tag2 --notes "Key metadata and takeaways"
+    ```
+- Before starting a new task:
+  - Search previous memory entries to check if relevant examples, lessons, or templates exist:
+    ```bash
+    venv/bin/python3 tools/memory.py search --query "keywords"
+    ```
+- Regularly update or archive old memories if newer, better methods are discovered.
+
+> Always refer to both the Scratchpad **and** the Memory Bank when planning next steps.
+
+# Tools
+
+All tools are Python 3-based. Always activate the local venv (`./venv`) before use.
+
+## Screenshot Verification Workflow
+
+1. Take a screenshot:
+
+   ```bash
+   venv/bin/python3 tools/screenshot_utils.py URL --output screenshot.png --width WIDTH --height HEIGHT
+   ```
+
+2. Verify with LLM:
+   ```bash
+   venv/bin/python3 tools/llm_api.py --prompt "Describe this page's appearance" --provider openai --image screenshot.png
+   ```
+
+Or in Python:
+
+```python
+from screenshot_utils import take_screenshot_sync
+from llm_api import query_llm
+
+screenshot_path = take_screenshot_sync('https://example.com', 'screenshot.png')
+response = query_llm(
+    "What is the background color and title of this webpage?",
+    provider="openai",
+    image_path=screenshot_path
+)
+print(response)
+```
+
+## LLM Query System
+
+- Basic query:
+
+  ```bash
+  venv/bin/python3 ./tools/llm_api.py --prompt "Your question here" --provider "openai"
+  ```
+
+- Supported Providers:
+
+  - OpenAI (`gpt-4o`)
+
+  - Azure OpenAI
+
+  - DeepSeek
+
+  - Anthropic (`claude-3-sonnet-20240229`)
+
+  - Gemini
+
+  - Local LLMs (`Qwen2.5-32B`, etc.)
+
+Always check `tools/llm_api.py` for latest provider options.
+
+## Web Scraper and Search Engine
+
+- Scrape web pages:
+
+  ```bash
+  venv/bin/python3 tools/web_scraper.py --max-concurrent 3 URL1 URL2 URL3
+  ```
+
+- Search the web:
+
+  ```bash
+  venv/bin/python3 tools/search_engine.py "your search query"
+  ```
+
+Combine search + scrape if deeper research is required.
+
+# Lessons
+
+## User Specified Lessons
+
+- Always activate `./venv` before Python development. Prefer `uv pip install` if available, fallback to regular `pip`.
+
+- For git operations needing multiline commits:
+
+  - Write the commit message in a temp file.
+
+  - Use:
+
+    ```bash
+    git commit -F message.txt
+    ```
+
+  - Delete the temp file afterward.
+
+  - Prefix PRs and commits with `[Cursor]`.
+
+## Cursor Learned
+
+- Always handle UTF-8 encoding carefully when dealing with scraped or searched content.
+
+- Use `'seaborn-v0_8'` as the style name with matplotlib instead of older `seaborn`.
+
+- Prefer `gpt-4o` for OpenAI-related queries due to its vision capabilities.
+
+- Always use the current year (`2025`) or the "recent" keyword when searching for news.
+
+- Systematically utilize the `.memory_bank` for past examples, fixes, templates, and optimizations.
+
+# Scratchpad
+
+## Current Task
+
+(Use this section to explain the task, list todo steps, and track progress.)
+
+## Reflection
+
+(After milestones or task completion, write brief notes about what worked, what didn’t, and what could improve.)
+
+# Memory Bank Quickstart Commands
+
+- Save a new memory:
+
+  ```bash
+  venv/bin/python3 tools/memory.py save --title "Task Title" --tags tag1,tag2 --notes "important metadata, fixes, templates"
+  ```
+
+- Search existing memories:
+
+  ```bash
+  venv/bin/python3 tools/memory.py search --query "keywords"
+  ```
+
+> Maintain a clean, organized, and actionable Memory Bank at all times to compound your efficiency over time.
+
+---

@@ -1,0 +1,39 @@
+Research Prompt Pack — Optimized for Research Assistant Acceleration
+
+---
+
+1. 🧠 Research Question — Model Optimization Techniques for Research-Heavy Tasks
+
+Researcher Task:  
+Locate comprehensive technical studies and applied benchmarks (from 2020–2025) comparing optimization techniques for improving inference efficiency in large language models used for long-context research tasks. Focus especially on techniques like model quantization, attention pruning, low-rank adaptation (LoRA), speculative decoding, and batching strategies. Summarize their real-world impact on inference speed, VRAM utilization, and context retention quality for models in the 7B–13B parameter range. Where possible, include practical implementation details, open-source tools, and examples tuned for running on Vulkan, ROCm, or CPU-only environments.
+
+---
+
+2. 📚 Research Question — Efficient Document Ingestion and Chunking Strategies for LLMs
+
+Researcher Task:  
+Investigate recent methods (published or shared between 2022–2025) for efficiently preprocessing, chunking, and feeding large documents (academic papers, legal documents, technical manuals) into LLMs without losing semantic coherence. Focus on smart chunking strategies (e.g., semantic segmentation, recursive splitting, overlap optimization) that maximize retention of critical information across document sections when context windows are limited (e.g., 8K–16K tokens). Provide examples, toolkits, or code snippets that automate document chunking in Python, preferably compatible with LangChain, HuggingFace, or local pipelines.
+
+---
+
+3. 🤖 Research Question — Best Practices for Building Multi-Turn Research Agents
+
+Researcher Task:  
+Gather detailed research (2021–2025) on best practices for designing multi-turn, memory-augmented research agents powered by large language models. Focus on frameworks and architectural patterns that allow LLMs to retain and build upon research findings over multiple queries, including retrieval-augmented generation (RAG), memory buffers, session-based learning, and self-critique loops. Highlight real-world case studies where agents were tuned for academic research assistance, scientific summarization, or technical report drafting. Where possible, provide modular Python examples or repository links illustrating effective multi-turn memory integration.
+
+---
+
+4. 🛰️ Research Question — Emerging Best Practices for Scalable Research Infrastructures Powered by Local LLMs
+
+Researcher Task:  
+Research emerging methodologies (from 2022–2025) for designing scalable, efficient research infrastructures based on locally deployed LLMs (7B–20B parameter class). Focus on topics such as hardware configuration (consumer GPUs vs server-grade), orchestration tools (e.g., LangChain, OpenDevin, local agent frameworks), dataset management strategies (chunking, retrieval, session memory), and runtime optimizations (speculative decoding, quantization tradeoffs). Include case studies or benchmarks where local setups achieved near-cloud performance. Where available, provide infrastructure diagrams, deployment scripts, and open-source toolkits.
+
+---
+
+Notes:
+- Prioritize finding real-world benchmarks, open-source code, or modular pipeline examples.
+- Focus on material that is from 2021 or newer to stay aligned with latest LLM evolution trends.
+- Verify if any provided repositories are Vulkan- or ROCm-compatible for AMD GPU setups.
+
+---
+End of Research Prompt Pack.
