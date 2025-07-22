@@ -54,7 +54,7 @@
     "@types/estree": "^1.0.7",
     "@types/js-yaml": "^4.0.5",
     "@types/pino": "^7.0.5",
-    "pnpm": "^7.0.0",
+    "pnpm": "^10.0.0",
     "strip-bom": "^3.0.0",
     "strip-json-comments": "^3.1.0"
   },
